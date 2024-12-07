@@ -12,3 +12,8 @@ npx sequelize-cli seed:generate --name seed-roles
 
 # migrate
 npx sequelize-cli db:migrate
+# seed all
+npx sequelize-cli db:seed:all
+
+
+

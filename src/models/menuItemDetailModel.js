@@ -29,7 +29,7 @@ const MenuItemDetail = sequelize.define('MenuItemDetail', {
     ...timestamp,
 });
 
-MenuItem.hasMany(MenuItemDetail, { foreignKey: 'menuItemId' });
+MenuItem.hasMany(MenuItemDetail);
 MenuItemDetail.belongsTo(MenuItem, { foreignKey: 'menuItemId' });
 
 module.exports = MenuItemDetail;
