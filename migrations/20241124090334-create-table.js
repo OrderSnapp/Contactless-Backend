@@ -15,7 +15,7 @@ module.exports = {
         unique: true,
       },
       qrImage: {
-        type: Sequelize.LONGBLOB,
+        type: Sequelize.BLOB,
         allowNull: false,
       },
       createdAt: {

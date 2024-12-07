@@ -13,8 +13,21 @@ const getTable = async (req, res) => {
     return TableService.getTableService({res, id});
 }
 
+const updateTable = async (req, res) => {
+    const { id } = req.params;
+    const { name } = req.body;
+    return TableService.updateTableService({res, id, name});
+}
+
+const deleteTable = async (req, res) => {
+    const { id } = req.params;
+    return TableService.deleteTableService({res, id});
+}
+
 module.exports = {
     createTable,
     getTables,
-    getTable
+    getTable,
+    updateTable,
+    deleteTable
 };

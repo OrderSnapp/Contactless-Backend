@@ -6,12 +6,11 @@ const { authMiddleware, authRoleMiddleware } = require('../middlewares/authMiddl
 
 // Use the route modules
 router.use('/auth', require('./authRouter'));
-
-// user route
 router.use('/users', authRoleMiddleware(['Admin']) ,require('./userRouter'));
-
-// table route
-// router.use('/tables', authRoleMiddleware(['Admin']), require('./tableRouter'));
 router.use('/tables',require('./tableRouter'));
+router.use('/ingredients', require('./ingredientRouter'));
+router.use('/menus', require('./menuRouter'));
+router.use('/menu-items', require('./menuItemRouter'));
+router.use('/reviews', require('./reviewRouter'));
 
 module.exports = router;

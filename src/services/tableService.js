@@ -1,4 +1,3 @@
-const nodeCanvas = require("canvas");
 const { JSDOM } = require("jsdom");
 const { QRCodeStyling } = require("qr-code-styling/lib/qr-code-styling.common.js");
 const apiResponse = require('../utils/apiResponse');
@@ -12,8 +11,8 @@ const createTableService = async ({res, name}) => {
          const options = {
             width: 300,
             height: 300,
-            data: `http://localhost:3000/tables/${newRecord.id}`, // Include the table ID in the QR code data
-            image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg", // Optional: Add a logo
+            data: `http://localhost:3000/tables/${newRecord.id}`,
+            image: "", // Optional: Add a logo
             dotsOptions: {
                 color: "#4267b2",
                 type: "rounded"
@@ -78,8 +77,40 @@ const getTablesService = async ({res}) =>{
     }
 }
 
+const updateTableService = async ({res, id, name}) =>{
+    try{
+        const table = await Table.findByPk(id);
+        if(!table){
+            return apiResponse(res, 404, 'Table not found');
+        }
+        table.name = name;
+        table.updatedAt = new Date();
+        await table.save();
+        return apiResponse(res, 200, 'Table updated successfully', table);
+    } catch (error) {
+        return apiResponse(res, 500, error.message);
+    }
+}
+
+const deleteTableService = async ({res, id}) =>{
+    try{
+        const table = await Table.findByPk(id);
+        if(!table){
+            return apiResponse(res, 404, 'Table not found');
+        }
+        await table.destroy();
+        return apiResponse(res, 200, 'Table deleted successfully');
+    } catch (error) {
+        return apiResponse(res, 500, error.message);
+    }
+}
+
+
+
 module.exports = { 
     createTableService,
     getTablesService,
-    getTableService
+    getTableService,
+    deleteTableService,
+    updateTableService
  };

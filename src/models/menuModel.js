@@ -10,6 +10,10 @@ const Menu = sequelize.define('Menu', {
     },
     name: {
         type: DataTypes.STRING,
+        allowNull: false,
+        unique: {
+            msg: 'menu name already in use'
+        },
     },
     ...timestamp,
 });
