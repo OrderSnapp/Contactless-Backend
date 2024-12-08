@@ -2,6 +2,9 @@ const {DataTypes} = require('sequelize');
 const sequelize = require('../config/db');
 const timestamp = require('../utils/timestamp');
 
+const Order = require('./orderModel');
+const MenuItemDetail = require('./menuItemDetailModel');
+
 const OrderDetail = sequelize.define('OrderDetail', {
     id: {
         type: DataTypes.INTEGER,
@@ -10,6 +13,10 @@ const OrderDetail = sequelize.define('OrderDetail', {
     },
     orderId: {
         type: DataTypes.INTEGER,
+        references: {
+            model: 'Orders',
+            key: 'id',
+        }
     },
     menuItemDetailId: {
         type: DataTypes.INTEGER,
@@ -22,5 +29,11 @@ const OrderDetail = sequelize.define('OrderDetail', {
     },
     ...timestamp,
 });
+
+Order.hasMany(OrderDetail,{foreignKey: 'orderId'});
+OrderDetail.belongsTo(Order,{foreignKey: 'orderId'});
+MenuItemDetail.hasMany(OrderDetail,{foreignKey: 'menuItemDetailId'});
+OrderDetail.belongsTo(MenuItemDetail,{foreignKey: 'menuItemDetailId'});
+
 
 module.exports = OrderDetail;
