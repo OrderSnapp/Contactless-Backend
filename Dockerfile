@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:21
 
 WORKDIR /usr/src/app
 
@@ -10,6 +10,6 @@ COPY . .
 
 RUN npm rebuild bcrypt --build-from-source
 
-EXPOSE 3000
+EXPOSE 3001
 
 CMD ["npm", "start"]

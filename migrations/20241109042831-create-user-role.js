@@ -28,7 +28,7 @@ module.exports = {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       },
-      CreatedAt: {
+      createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
       },
@@ -36,7 +36,7 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
       },
-      CreatedBy: {
+      createdBy: {
         type: Sequelize.INTEGER,
         allowNull: true,
       },

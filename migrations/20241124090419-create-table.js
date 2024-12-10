@@ -14,6 +14,17 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
+      menuId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Menus', // Name of the referenced table
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+        allowNull: true,
+        
+      },
       qrImage: {
         type: Sequelize.BLOB,
         allowNull: false,

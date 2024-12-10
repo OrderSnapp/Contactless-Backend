@@ -13,6 +13,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      icon:{
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       menuId: {
         type: Sequelize.INTEGER,
         references: {

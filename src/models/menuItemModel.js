@@ -16,6 +16,10 @@ const MenuItem = sequelize.define('MenuItem', {
             msg: 'menu item name already in use'
         },
     },
+    icon: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     menuId: {
         type: DataTypes.INTEGER,
         references: {

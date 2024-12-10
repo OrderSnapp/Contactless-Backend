@@ -13,6 +13,14 @@ const Table = sequelize.define('Table', {
         allowNull: false,
         unique: true,
     },
+    menuId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'Menu',
+            key: 'id',
+        },
+        allowNull: true,
+    },
     qrImage: {
         type: DataTypes.BLOB('long'),
         allowNull: false,
