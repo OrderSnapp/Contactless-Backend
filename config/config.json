@@ -1,16 +1,16 @@
 {
   "development": {
-    "username": "fedb",
-    "password": "FeSys2357.!",
+    "username": "userStem202",
+    "password": "AdminStem202",
     "database": "contactless",
-    "host": "52.74.252.162",
+    "host": "178.128.208.138",
     "dialect": "postgres"
   },
   "test": {
-    "username": "fedb",
-    "password": "FeSys2357.!",
+    "username": "sunchengchhay",
+    "password": "Rupp2357.!",
     "database": "contactless",
-    "host": "52.74.252.162",
+    "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {

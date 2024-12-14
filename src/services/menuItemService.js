@@ -56,8 +56,23 @@ const updateMenuItemService = async ({res, id, name, menuId, icon}) => {
     }
 }
 
+const deleteMenuItemService = async ({res, id}) => {
+    try{
+        const menuItem = await MenuItem.findByPk(id);
+        if(!menuItem){
+            return apiResponse(res, 404, 'Menu Item not found');
+        }
+
+        await menuItem.destroy();
+        return apiResponse(res, 204, 'Menu Item deleted successfully');
+    }catch(error){
+        return apiResponse(res, 500, error.message);
+    }
+}
+
 module.exports = {
     createMenuItemService,
     getMenuItemsService,
-    updateMenuItemService
+    updateMenuItemService,
+    deleteMenuItemService
 }

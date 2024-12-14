@@ -15,5 +15,8 @@ npx sequelize-cli db:migrate
 # seed all
 npx sequelize-cli db:seed:all
 
+# use test 
+NODE_ENV=test npx sequelize-cli db:migrate
+
 
 

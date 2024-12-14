@@ -16,8 +16,14 @@ const updateMenuItem = async (req, res) => {
     return MenuItemService.updateMenuItemService({res, id, name, menuId, icon});
 }
 
+const deleteMenuItem = async (req, res) => {
+    const { id } = req.params;
+    return MenuItemService.deleteMenuItemService({res, id});
+}
+
 module.exports = {
     createMenuItem,
     getMenuItems,
-    updateMenuItem
+    updateMenuItem,
+    deleteMenuItem
 }

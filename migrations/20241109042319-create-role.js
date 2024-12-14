@@ -28,12 +28,10 @@ module.exports = {
       createdBy: {
         type: Sequelize.INTEGER,
         allowNull: true,
-        defaultValue: 1,
       },
       updatedBy: {
         type: Sequelize.INTEGER,
         allowNull: true,
-        defaultValue: 1,
       },
     });
   },
