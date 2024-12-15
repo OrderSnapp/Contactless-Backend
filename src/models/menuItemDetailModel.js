@@ -23,8 +23,16 @@ const MenuItemDetail = sequelize.define('MenuItemDetail', {
             msg: 'menu item detail name already in use'
         },
     },
+    imgae:{
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     price: {
         type: DataTypes.FLOAT,
+    },
+    status:{
+        type: DataTypes.ENUM('AVAILABLE', 'UNAVAILABLE'),
+        allowNull: false,
     },
     ...timestamp,
 });
