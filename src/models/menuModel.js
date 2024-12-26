@@ -15,6 +15,9 @@ const Menu = sequelize.define('Menu', {
             msg: 'menu name already in use'
         },
     },
+    default:{
+        type: DataTypes.BOOLEAN,
+    },
     ...timestamp,
 });
 

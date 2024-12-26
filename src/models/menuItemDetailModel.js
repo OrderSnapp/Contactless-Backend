@@ -15,6 +15,7 @@ const MenuItemDetail = sequelize.define('MenuItemDetail', {
             model: 'MenuItem',
             key: 'id',
         },
+        field: 'menuItemId'
     },
     name: {
         type: DataTypes.STRING,
@@ -23,21 +24,26 @@ const MenuItemDetail = sequelize.define('MenuItemDetail', {
             msg: 'menu item detail name already in use'
         },
     },
-    imgae:{
+    imageUrl:{
         type: DataTypes.STRING,
         allowNull: true,
     },
     price: {
         type: DataTypes.FLOAT,
+        allowNull: false,
     },
     status:{
         type: DataTypes.ENUM('AVAILABLE', 'UNAVAILABLE'),
         allowNull: false,
     },
+    ingredient:{
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     ...timestamp,
 });
 
-MenuItem.hasMany(MenuItemDetail);
+MenuItem.hasMany(MenuItemDetail, { foreignKey: 'menuItemId' , as: 'items' });
 MenuItemDetail.belongsTo(MenuItem, { foreignKey: 'menuItemId' });
 
 module.exports = MenuItemDetail;

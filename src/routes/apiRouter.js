@@ -12,5 +12,6 @@ router.use('/ingredients', require('./ingredientRouter'));
 router.use('/menus', require('./menuRouter'));
 router.use('/menu-items', require('./menuItemRouter'));
 router.use('/reviews', require('./reviewRouter'));
+router.use('/menu-item-details', require('./menuItemDetailRouter'));
 
 module.exports = router;

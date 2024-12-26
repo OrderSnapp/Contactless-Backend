@@ -18,6 +18,7 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
         allowNull: true,
+        field: 'menuItemId',
       },
       name: {
         type: Sequelize.STRING,
@@ -32,7 +33,11 @@ module.exports = {
         type: Sequelize.ENUM('AVAILABLE', 'UNAVAILABLE'),
         allowNull: false,
       },
-      image: {
+      imageUrl: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      ingredient: {
         type: Sequelize.STRING,
         allowNull: true,
       },
