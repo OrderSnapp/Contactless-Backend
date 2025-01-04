@@ -3,17 +3,18 @@ const Menu = require('../models/menuModel');
 const apiResponse = require('../utils/apiResponse');
 const menuItemDTO = require('../dtos/menuItemDTO');
 
-const createMenuItemService = async ({res, name, menuId, icon}) => {
+const createMenuItemService = async ({res, name, icon}) => {
     try{
         
-        const menu = await Menu.findByPk(menuId);
+        const menu = await Menu.findOne({ where: { default: true } });;
         if(!menu){
             return apiResponse(res, 404, 'Menu not found');
         }
 
-        const newRecord = await MenuItem.create({name, menuId, icon});
+        const newRecord = await MenuItem.create({name, icon, menuId: menu.id});
         return apiResponse(res, 201, 'Menu Item created successfully', newRecord);
     }catch(error){
+        console.log(error);
         return apiResponse(res, 500, error.message);
     }
 }

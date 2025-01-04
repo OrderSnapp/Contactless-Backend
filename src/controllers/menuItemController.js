@@ -1,8 +1,8 @@
 const MenuItemService =  require('../services/menuItemService');
 
 const createMenuItem = async (req, res) => {
-    const { name, menuId, icon } = req.body;
-    return MenuItemService.createMenuItemService({res, name, menuId, icon});
+    const { name, icon } = req.body;
+    return MenuItemService.createMenuItemService({res, name, icon});
 }
 
 const getMenuItems = async (req, res) => {
