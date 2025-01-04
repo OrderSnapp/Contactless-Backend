@@ -12,8 +12,8 @@ const getMenuItems = async (req, res) => {
 
 const updateMenuItem = async (req, res) => {
     const { id } = req.params;
-    const { name, menuId, icon } = req.body;
-    return MenuItemService.updateMenuItemService({res, id, name, menuId, icon});
+    const { name, icon } = req.body;
+    return MenuItemService.updateMenuItemService({res, id, name, icon});
 }
 
 const deleteMenuItem = async (req, res) => {
