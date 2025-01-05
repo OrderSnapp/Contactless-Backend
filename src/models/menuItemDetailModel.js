@@ -20,9 +20,6 @@ const MenuItemDetail = sequelize.define('MenuItemDetail', {
     name: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: {
-            msg: 'menu item detail name already in use'
-        },
     },
     imageUrl:{
         type: DataTypes.STRING,

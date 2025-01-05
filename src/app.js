@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const packageJson = require('../package.json');
 
@@ -9,6 +10,8 @@ const packageJson = require('../package.json');
 //     credentials: true, // Allow credentials
 //     optionsSuccessStatus: 204 // Some legacy browsers (IE11, various SmartTVs) choke on 204
 // };
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // app.use(cors(corsOptions));
 app.use(cors());
