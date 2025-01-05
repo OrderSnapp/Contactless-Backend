@@ -18,7 +18,7 @@ const getAllCategoriesMenuItemDetailService = async ({res}) => {
 
         menuItems.forEach(menuItem => {
             menuItem.items.forEach(item => {
-                item.status = item.status.toLowerCase();
+                item.status = item.status.charAt(0).toUpperCase() + item.status.slice(1).toLowerCase();
             });
         });
 
