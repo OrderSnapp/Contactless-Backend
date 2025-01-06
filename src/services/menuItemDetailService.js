@@ -64,7 +64,7 @@ const createMenuDetailService = async ({res, menuItemDetails, menuItemId }) => {
                 menuItemId,
                 imageUrl,
             });
-        
+            maxId++;
             newRecords.push(newRecord);
         }
 
