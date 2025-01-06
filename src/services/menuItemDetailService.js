@@ -30,7 +30,6 @@ const getAllCategoriesMenuItemDetailService = async ({res}) => {
 
 const createMenuDetailService = async ({res, menuItemDetails, menuItemId }) => {
     try{
-
         if(menuItemId == 0){
             return apiResponse(res, 400, 'you cannot create a menu item detail in all');
         }
@@ -75,8 +74,40 @@ const createMenuDetailService = async ({res, menuItemDetails, menuItemId }) => {
     }
 }
 
+const updateMenuDetailService = async ({ res, menuItemDetails }) => {
+    try {
+      let imageUrl = menuItemDetails.imageUrl;
+
+      // Check if the imageUrl is a base64 string
+      if (imageUrl.startsWith('data:image')) {
+        const uploadResponse = await cloudinary.uploader.upload(imageUrl, {
+          folder: 'contactless',
+          use_filename: true,
+        });
+        imageUrl = uploadResponse.secure_url;
+      }
+  
+      menuItemDetails.status = menuItemDetails.status.toUpperCase();
+  
+      const updatedRecord = await MenuItemDetail.update({
+        ...menuItemDetails,
+        imageUrl,
+      }, {
+        where: {
+          id: menuItemDetails.id,
+        }
+      });
+
+      return apiResponse(res, 200, 'Menu Item Detail updated successfully', updatedRecord);
+    } catch (error) {
+      console.log(error);
+      return apiResponse(res, 500, error.message);
+    }
+  };
+
 
 module.exports = {
     getAllCategoriesMenuItemDetailService,
-    createMenuDetailService
+    createMenuDetailService,
+    updateMenuDetailService,
 }

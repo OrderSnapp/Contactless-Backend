@@ -5,5 +5,6 @@ const menuItemDetailController = require('../controllers/menuItemDetailControlle
 
 menuItemDetailRouter.get('', menuItemDetailController.getCategoriesAndMenuItemDetails);
 menuItemDetailRouter.post('', menuItemDetailController.createMenuItemDetails);
+menuItemDetailRouter.put('', menuItemDetailController.updateMenuItemDetail);
 
 module.exports = menuItemDetailRouter;
