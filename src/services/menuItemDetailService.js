@@ -3,6 +3,7 @@ const MenuItemDetail  = require('../models/menuItemDetailModel');
 const MenuItem = require('../models/menuItemModel');
 const cloudinary = require('../config/cloudinary');
 const sequelize = require('../config/db');
+const menuItemDetailDTO = require('../dtos/menuItemDetailDTO');
 
 const getAllCategoriesMenuItemDetailService = async ({res}) => {
     try{
@@ -64,10 +65,11 @@ const createMenuDetailService = async ({res, menuItemDetails, menuItemId }) => {
                 imageUrl,
             });
             maxId++;
-            newRecords.push(newRecord);
+
+            newRecords.push(menuItemDetailDTO(newRecord));
         }
 
-        return apiResponse(res, 201, 'Menu Item Detail created successfully', newRecords);
+        return apiResponse(res, 201, 'Menu Item Details created successfully', newRecords);
     }catch(error){
         console.log(error);
         return apiResponse(res, 500, error.message);
