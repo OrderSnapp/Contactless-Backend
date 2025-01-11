@@ -107,9 +107,33 @@ const updateMenuDetailService = async ({ res, menuItemDetails }) => {
     }
   };
 
+const deleteMenuDetailService = async ({ res, menuItemDetailsId }) => {
+  try {
+    let deletedRecord;
+    if (Array.isArray(menuItemDetailsId)) {
+      deletedRecord = await MenuItemDetail.destroy({
+        where: {
+          id: menuItemDetailsId,
+        }
+      });
+    } else {
+      deletedRecord = await MenuItemDetail.destroy({
+        where: {
+          id: menuItemDetailsId,
+        }
+      });
+    }
+
+    return apiResponse(res, 200, 'Deleted successfully', deletedRecord);
+  } catch (error) {
+    return apiResponse(res, 500, 'An error occurred while deleting the Menu Item Detail', error);
+  }
+}
+
 
 module.exports = {
     getAllCategoriesMenuItemDetailService,
     createMenuDetailService,
     updateMenuDetailService,
+    deleteMenuDetailService,
 }
