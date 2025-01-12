@@ -3,7 +3,24 @@ const apiResponse = require('../utils/apiResponse');
 
 const createMenuService = async ({res,name}) => {
     try{
-        const newRecord = await Menu.create({name});
+
+        const TrimName = name.trim();
+        const menu = await Menu.findOne({where: {name: TrimName}});
+        const checkMenuExist = menu ? true : false;
+
+        if(checkMenuExist){
+            return apiResponse(res, 400, 'Menu already exists');
+        }
+
+        const defaultMenu = await Menu.findOne({where: {default: true}});
+
+        if(defaultMenu){
+            const newRecord = await Menu.create({name: TrimName});
+            return apiResponse(res, 201, 'Menu created successfully', newRecord);
+        }
+
+        const newRecord = await Menu.create({name: TrimName, default: true});
+
         return apiResponse(res, 201, 'Menu created successfully', newRecord);
     }catch(error){
         return apiResponse(res, 500, error.message);

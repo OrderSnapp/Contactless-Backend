@@ -1,12 +1,13 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../config/db');
 const timestamp = require('../utils/timestamp');
+const sql = require('sequelize');
 
 const Table = sequelize.define('Table', {
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
-        autoIncrement: true,
     },
     name: {
         type: DataTypes.STRING,
@@ -22,7 +23,7 @@ const Table = sequelize.define('Table', {
         allowNull: true,
     },
     qrImage: {
-        type: DataTypes.BLOB('long'),
+        type: DataTypes.STRING,
         allowNull: false,
     },
     ...timestamp,

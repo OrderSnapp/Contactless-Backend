@@ -10,7 +10,7 @@ module.exports = {
         autoIncrement: true,
       },
       tableId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: {
           model: 'Tables',
           key: 'id',

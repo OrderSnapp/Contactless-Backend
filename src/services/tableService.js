@@ -2,17 +2,21 @@ const { JSDOM } = require("jsdom");
 const { QRCodeStyling } = require("qr-code-styling/lib/qr-code-styling.common.js");
 const apiResponse = require('../utils/apiResponse');
 const Table = require('../models/tableModel');
+const cloudinary = require('../config/cloudinary');
+const Menu = require("../models/menuModel");
 
 const createTableService = async ({res, name}) => {
     try{
 
-        let newRecord = await Table.create({ name, qrImage: '123' });
+        let menu = await Menu.findOne({where: {default: true}});
 
-         const options = {
+        let newRecord = await Table.create({ name, qrImage: '123', menuId: menu.id });
+
+        const options = {
             width: 300,
             height: 300,
-            data: `http://localhost:3000/tables/${newRecord.id}`,
-            image: "", // Optional: Add a logo
+            data: `http://localhost:3000/customer/menu?table=${newRecord.id}`,
+            image: "",
             dotsOptions: {
                 color: "#4267b2",
                 type: "rounded"
@@ -33,7 +37,15 @@ const createTableService = async ({res, name}) => {
         });
 
         const qrCodeBuffer = await qrCodeSvg.getRawData("svg");
-        newRecord.qrImage = qrCodeBuffer;
+        const base64Svg = qrCodeBuffer.toString('base64');
+        const imageUrl = `data:image/svg+xml;base64,${base64Svg}`;
+
+        const uploadResponse = await cloudinary.uploader.upload(imageUrl, {
+            folder: 'table-qr-codes',
+            use_filename: true,
+          });
+        
+        newRecord.qrImage = uploadResponse.secure_url;
         await newRecord.save();
 
         return apiResponse(res, 201, 'Table created successfully', newRecord);
@@ -52,12 +64,6 @@ const createTableService = async ({res, name}) => {
 const getTableService = async ({res, id}) =>{
     try{
         const table = await Table.findByPk(id);
-
-        // Convert the buffer to base64
-        const buffer = table.qrImage;
-        const base64Svg = buffer.toString('base64');
-        const imgSrc = `data:image/svg+xml;base64,${base64Svg}`;
-
         return apiResponse(res, 200, 'Tables retrieved successfully', {
             id: table.id,
             name: table.name,
