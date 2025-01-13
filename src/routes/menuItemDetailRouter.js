@@ -7,6 +7,5 @@ menuItemDetailRouter.get('', menuItemDetailController.getCategoriesAndMenuItemDe
 menuItemDetailRouter.post('', menuItemDetailController.createMenuItemDetails);
 menuItemDetailRouter.put('', menuItemDetailController.updateMenuItemDetail);
 menuItemDetailRouter.delete('', menuItemDetailController.deleteMenuItemDetail);
-menuItemDetailRouter.put('/status', menuItemDetailController.updateMenuItemDetailStatus);
 
 module.exports = menuItemDetailRouter;

@@ -134,28 +134,9 @@ const deleteMenuDetailService = async ({ res, menuItemDetailsId }) => {
   }
 }
 
-const updateMenuDetailStatusService = async ({ res, menuItemDetailsId, status }) => {
-  try{
-    const updatedRecord = await MenuItemDetail.update({
-      status: status.toUpperCase(),
-    }, {
-      where: {
-        id: menuItemDetailsId,
-      }
-    });
-
-    return apiResponse(res, 200, 'Menu Item Detail status updated successfully', updatedRecord);
-  }
-  catch(error){
-    return apiResponse(res, 500, error.message);
-  }
-}
-
-
 module.exports = {
     getAllCategoriesMenuItemDetailService,
     createMenuDetailService,
     updateMenuDetailService,
     deleteMenuDetailService,
-    updateMenuDetailStatusService,
 }
