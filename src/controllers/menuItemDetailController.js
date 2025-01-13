@@ -23,5 +23,5 @@ module.exports = {
     getCategoriesAndMenuItemDetails,
     createMenuItemDetails,
     updateMenuItemDetail,
-    deleteMenuItemDetail
+    deleteMenuItemDetail,
 }
