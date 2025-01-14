@@ -30,6 +30,26 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      number:{
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      shape:{
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      size:{
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      capacity:{
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      position:{
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: true,

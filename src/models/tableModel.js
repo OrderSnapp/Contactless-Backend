@@ -26,6 +26,26 @@ const Table = sequelize.define('Table', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    number:{
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+    shape:{
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    size:{
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    capacity:{
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+    position:{
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     ...timestamp,
 });
 

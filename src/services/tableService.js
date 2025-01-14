@@ -60,15 +60,33 @@ const createTableService = async ({res, name}) => {
     }
 };
 
+const getTablesLayoutService = async ({res}) => {
+    try {
+        const tables = await Table.findAll({
+            attributes: ['id', 'name', 'number', 'shape', 'size', 'capacity', 'position']
+        });
+
+        const transformedTables = tables.map(table => {
+            const [width, height] = table.size.split('/').map(Number);
+            const [x, y] = table.position.split('/').map(Number);
+            return {
+                ...table.toJSON(),
+                size: { width, height },
+                position: { x, y }
+            };
+        });
+
+        return apiResponse(res, 200, 'Tables retrieved successfully', transformedTables);
+    } catch (error) {
+        return apiResponse(res, 500, error.message);
+    }
+};
+
 
 const getTableService = async ({res, id}) =>{
     try{
         const table = await Table.findByPk(id);
-        return apiResponse(res, 200, 'Tables retrieved successfully', {
-            id: table.id,
-            name: table.name,
-            qrImage: imgSrc
-        });
+        return apiResponse(res, 200, 'Tables retrieved successfully', table);
     } catch (error) {
         return apiResponse(res, 500, error.message);
     }
@@ -76,7 +94,9 @@ const getTableService = async ({res, id}) =>{
 
 const getTablesService = async ({res}) =>{
     try{
-        const tables = await Table.findAll();
+        const tables = await Table.findAll({
+            attributes: ['id', 'name', 'number']
+        });
         return apiResponse(res, 200, 'Tables retrieved successfully', tables);
     } catch (error) {
         return apiResponse(res, 500, error.message);
@@ -118,5 +138,6 @@ module.exports = {
     getTablesService,
     getTableService,
     deleteTableService,
-    updateTableService
+    updateTableService,
+    getTablesLayoutService
  };

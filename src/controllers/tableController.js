@@ -24,10 +24,15 @@ const deleteTable = async (req, res) => {
     return TableService.deleteTableService({res, id});
 }
 
+const getTablesLayout = async (req,res) => {
+    return TableService.getTablesLayoutService({res});
+}
+
 module.exports = {
     createTable,
     getTables,
     getTable,
     updateTable,
-    deleteTable
+    deleteTable,
+    getTablesLayout
 };

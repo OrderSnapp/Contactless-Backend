@@ -27,7 +27,7 @@ const getAllCategoriesMenuItemDetailService = async ({res}) => {
     }catch(error){
         return apiResponse(res, 500, error.message);
     }
-}
+};
 
 const createMenuDetailService = async ({res, menuItemDetails, menuItemId }) => {
     try{
@@ -78,7 +78,7 @@ const createMenuDetailService = async ({res, menuItemDetails, menuItemId }) => {
         console.log(error);
         return apiResponse(res, 500, error.message);
     }
-}
+};
 
 const updateMenuDetailService = async ({ res, menuItemDetails }) => {
     try {
@@ -109,7 +109,7 @@ const updateMenuDetailService = async ({ res, menuItemDetails }) => {
       console.log(error);
       return apiResponse(res, 500, error.message);
     }
-  };
+};
 
 const deleteMenuDetailService = async ({ res, menuItemDetailsId }) => {
   try {
@@ -132,7 +132,7 @@ const deleteMenuDetailService = async ({ res, menuItemDetailsId }) => {
   } catch (error) {
     return apiResponse(res, 500, 'An error occurred while deleting the Menu Item Detail', error);
   }
-}
+};
 
 module.exports = {
     getAllCategoriesMenuItemDetailService,
