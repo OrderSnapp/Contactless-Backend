@@ -63,7 +63,7 @@ const createTableService = async ({res, name}) => {
 const getTablesLayoutService = async ({res}) => {
     try {
         const tables = await Table.findAll({
-            attributes: ['id','imgUrl','name', 'number', 'shape', 'size', 'capacity', 'position']
+            attributes: ['id','qrImage','name', 'number', 'shape', 'size', 'capacity', 'position']
         });
 
         const transformedTables = tables.map(table => {
