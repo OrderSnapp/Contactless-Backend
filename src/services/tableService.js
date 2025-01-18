@@ -4,6 +4,7 @@ const apiResponse = require('../utils/apiResponse');
 const Table = require('../models/tableModel');
 const cloudinary = require('../config/cloudinary');
 const Menu = require("../models/menuModel");
+const generateAndUploadQRCode = require('../utils/generateQR');
 
 const createTableService = async ({res, name}) => {
     try{
@@ -58,6 +59,72 @@ const createTableService = async ({res, name}) => {
 
         return apiResponse(res, 500, error.message);
     }
+};
+
+const createTableFromLayoutService = async ({ res, tables }) => {
+    // try {
+        const newTables = [];
+
+        console.log(`Data coming: ${JSON.stringify(tables, null, 2)}`);
+
+        for (const table of tables) {
+
+            let existingTable;
+
+            if(table.qrImage){
+                existingTable = await Table.findByPk(table.id);
+            } else {
+                existingTable = null;
+            }
+
+            if (existingTable) {
+                newTables.push(table);
+                existingTable.name = table.number;
+                existingTable.number = table.number;
+                existingTable.shape = table.shape;
+                existingTable.size = `${table.size.width}/${table.size.height}`;
+                existingTable.capacity = table.capacity;
+                existingTable.position = `${table.position.x}/${table.position.y}`;
+                if (table.qrImage) {
+                    existingTable.qrImage = table.qrImage;
+                }
+                await existingTable.save();
+                
+            } else {
+                const newTable = await Table.create({
+                    name: table.number.toString(),
+                    number: table.number,
+                    shape: table.shape,
+                    size: `${table.size.width}/${table.size.height}`,
+                    capacity: table.capacity,
+                    position: `${table.position.x}/${table.position.y}`,
+                    qrImage: table.qrImage
+                });
+
+                const qrUrlData = `http://localhost:3000/customer/menu?table=${newTable.id}`;
+                const folderName = 'table-qr-codes';
+                const secureUrl = await generateAndUploadQRCode(qrUrlData, folderName);
+                const menu = await Menu.findOne({where: {default: true}});
+
+                newTable.qrImage = secureUrl;
+                newTable.menuId = menu.id;
+                await newTable.save();
+
+                const [width, height] = newTable.size.split('/').map(Number);
+                const [x, y] = newTable.position.split('/').map(Number);
+
+                newTables.push({
+                    ...newTable.toJSON(),
+                    size: { width, height },
+                    position: { x, y }
+                });
+            }
+        }
+        return apiResponse(res, 201, 'Tables created or updated successfully', newTables);
+    // } catch (error) {
+    //     console.log(`Error: ${error.message}`);
+    //     return apiResponse(res, 500, error.message);
+    // }
 };
 
 const getTablesLayoutService = async ({res}) => {
@@ -131,13 +198,12 @@ const deleteTableService = async ({res, id}) =>{
     }
 }
 
-
-
 module.exports = { 
     createTableService,
     getTablesService,
     getTableService,
     deleteTableService,
     updateTableService,
-    getTablesLayoutService
+    getTablesLayoutService,
+    createTableFromLayoutService,
  };

@@ -28,11 +28,17 @@ const getTablesLayout = async (req,res) => {
     return TableService.getTablesLayoutService({res});
 }
 
+const createTableFromLayout = async (req, res) => {
+    const { tables } = req.body;
+    return TableService.createTableFromLayoutService({res, tables});
+}
+
 module.exports = {
     createTable,
     getTables,
     getTable,
     updateTable,
     deleteTable,
-    getTablesLayout
+    getTablesLayout,
+    createTableFromLayout
 };
