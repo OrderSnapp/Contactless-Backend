@@ -4,17 +4,17 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const packageJson = require('../package.json');
 
-// const corsOptions = {
-//     origin: 'http://example.com', // Allow only this origin
-//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Allow these methods
-//     credentials: true, // Allow credentials
-//     optionsSuccessStatus: 204 // Some legacy browsers (IE11, various SmartTVs) choke on 204
-// };
+const corsOptions = {
+    origin: 'localhost:3000',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204
+};
+
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-// app.use(cors(corsOptions));
-app.use(cors());
+app.use(cors(corsOptions));
 
 // Middleware to parse JSON
 app.use(express.json());
