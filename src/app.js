@@ -5,7 +5,7 @@ const cors = require('cors');
 const packageJson = require('../package.json');
 
 const corsOptions = {
-    origin: 'localhost:3000',
+    origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionsSuccessStatus: 204
