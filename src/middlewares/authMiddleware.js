@@ -11,9 +11,11 @@ const authMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
-    console.log('Decoded Token:', decoded);
     next();
   } catch (err) {
+    if (err.name === 'TokenExpiredError') {
+      return apiResponse(res, 401, 'Token has expired');
+    }
     return apiResponse(res, 401, 'Invalid token');
   }
 };
@@ -36,8 +38,6 @@ const authRoleMiddleware = (roles=[])=>{
           const decoded = jwt.verify(token, process.env.JWT_SECRET);
           req.user = decoded;
 
-          console.log('Decoded Token:', decoded);
-          
           // Check if the user has any of the required roles
           if (roles.length && !decoded.roles.some(role => roles.includes(role))) {
             return apiResponse(res, 401, 'Token Unauthorized');

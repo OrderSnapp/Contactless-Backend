@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Import the individual route modules
-const { authMiddleware, authRoleMiddleware } = require('../middlewares/authMiddleware');
+const { authRoleMiddleware } = require('../middlewares/authMiddleware');
 
 // Use the route modules
 router.use('/auth', require('./authRouter'));
@@ -13,5 +13,6 @@ router.use('/menus', require('./menuRouter'));
 router.use('/menu-items', require('./menuItemRouter'));
 router.use('/reviews', require('./reviewRouter'));
 router.use('/menu-item-details', require('./menuItemDetailRouter'));
+router.use('/settings', require('./settingRouter'));
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const User = require('../models/userModel');
 const UserRole = require('../models/userRoleModel');
+const jwt = require('jsonwebtoken');
 
 const apiResponse = require('../utils/apiResponse');
 const generateAuthToken = require('../utils/generateToken');
@@ -29,7 +30,7 @@ const registerService = async ({res, username, email, password, phone}) => {
     }
 };
 
-const loginService = async ({ res, username, password }) => {
+const loginService = async ({ req,res, username, password }) => {
     try {
         const user = await User.findOne({ where: { username } });
 
@@ -43,7 +44,6 @@ const loginService = async ({ res, username, password }) => {
             return apiResponse(res, 401, 'Invalid Credentials');
         }
 
-        // Get user roles
         const userWithRoles = await User.findOne({
             where: { id: user.id },
             include: {
@@ -56,9 +56,16 @@ const loginService = async ({ res, username, password }) => {
         const roles = userWithRoles.Roles.map(role => role.name);
 
         const token = generateAuthToken({ id: user.id, username: user.username, roles: roles });
-        return apiResponse(res, 200, 'Login successful', { token });
+
+        return apiResponse(res, 200, 'Login successful', { token , user: username });
     } catch (error) {
         return apiResponse(res, 500, error.message);
     }}
 
-module.exports = { registerService, loginService };
+const sessionService = async ({ req, res }) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return res.status(200).json({ id: decoded.id, username: decoded.username, role: decoded.roles[0] });
+}
+
+module.exports = { registerService, loginService, sessionService };
