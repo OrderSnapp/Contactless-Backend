@@ -11,6 +11,14 @@ module.exports = {
           primaryKey: true,
           autoIncrement: true
         },
+        firstName:{
+          type: Sequelize.STRING,
+          allowNull: false
+        },
+        lastName:{
+          type: Sequelize.STRING,
+          allowNull: false
+        },
         username: {
           type: Sequelize.STRING,
           allowNull: false
@@ -26,6 +34,10 @@ module.exports = {
         },
         phone:{
           type: Sequelize.STRING
+        },
+        status:{
+          type: Sequelize.ENUM('Active', 'Inactive'),
+          defaultValue: 'Active'
         },
         createdAt: {
           type: Sequelize.DATE,

@@ -9,6 +9,14 @@ const User = sequelize.define('User', {
         primaryKey: true,
         autoIncrement: true,
     },
+    firstName:{
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    lastName:{
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     username: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -34,6 +42,10 @@ const User = sequelize.define('User', {
     },
     phone:{
         type: DataTypes.STRING,
+    },
+    status:{
+        type: DataTypes.ENUM('Active', 'Inactive'),
+        defaultValue: 'Active',
     },
     ...timestamp
 });

@@ -21,7 +21,7 @@ const Setting = sequelize.define('Setting', {
         allowNull: false,
         
     },
-    Logo:{
+    font: {
         type: DataTypes.STRING,
         allowNull: false,
     },
