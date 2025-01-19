@@ -44,7 +44,7 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
     },
     status:{
-        type: DataTypes.ENUM('Active', 'Inactive'),
+        type: DataTypes.STRING,
         defaultValue: 'Active',
     },
     ...timestamp
