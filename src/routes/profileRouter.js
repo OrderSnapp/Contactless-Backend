@@ -35,9 +35,7 @@ profileRouter.get('/:id', (req, res) => {
     res.json({
         status: 'success',
         message: 'Profile found',
-        data: {
-            profile
-        }
+        data: profile
     });
 });
 
