@@ -15,4 +15,29 @@ router.use('/reviews', require('./reviewRouter'));
 router.use('/menu-item-details', require('./menuItemDetailRouter'));
 router.use('/settings', require('./settingRouter'));
 
+
+
+
+router.use('/profiles', require('./profileRouter'));
+router.get('/greeting', (req, res) => {
+    const currentHour = new Date().getHours();
+    let message;
+
+    if (currentHour >= 5 && currentHour < 12) {
+        message = 'Good morning';
+    }else if(currentHour >= 12 && currentHour < 17){
+        message = 'Good afternoon';
+    } else if (currentHour >= 17 && currentHour < 22) {
+        message = 'Good evening';
+    } else {
+        message = 'Good night';
+    }
+
+    res.json({
+        status: 'success',
+        message: 'Welcome to the Restaurant API',
+        data: message
+    });
+});
+
 module.exports = router;
