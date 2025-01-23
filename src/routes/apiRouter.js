@@ -46,21 +46,21 @@ router.get('/history', (req, res) => {
             name: 'Song Meysorng',
             img: 'https://cdn3.iconfinder.com/data/icons/avatars-flat/33/woman_9-512.png',
             emotion: 'Happy',
-            created_at: '18:00:00'
+            created_at: '18:00'
         },
         {
             id: 2,
             name: 'Sun Chengchhay',
             img: 'https://cdn1.iconfinder.com/data/icons/user-pictures/101/malecostume-512.png',
             emotion: 'Angry',
-            created_at: '12:00:00'
+            created_at: '12:00'
         },
         {
             id: 3,
             name: 'Sokha Rithy',
             img: 'https://icons.veryicon.com/png/o/miscellaneous/user-avatar/user-avatar-male-5.png',
             emotion: 'Surprised',
-            created_at: '07:00:00'
+            created_at: '07:00'
         }
     ];
 
