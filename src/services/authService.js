@@ -7,7 +7,7 @@ const generateAuthToken = require('../utils/generateToken');
 const comparePassword = require('../utils/comparePassword');
 const Role = require('../models/roleModel');
 
-const registerService = async ({res, username, email, password, phone}) => {
+const registerService = async ({res, username, email, password, phone, firstname, lastname}) => {
     try{
         const existingUser = await User.findOne({ where: { username } });
 
@@ -15,7 +15,18 @@ const registerService = async ({res, username, email, password, phone}) => {
             return apiResponse(res, 401, 'User already exists');
         }
 
-        const user = await User.create({ username, email, password, phone });
+        let status = "Active";
+        const user = await User.create(
+            { 
+                username,
+                email, 
+                password, 
+                phone, 
+                firstName: firstname,
+                lastName: lastname,
+                status: status
+            }
+        );
         await UserRole.create({ userId: user.id, roleId: 2 });
         
         return apiResponse(res, 201, 'User created successfully', user);

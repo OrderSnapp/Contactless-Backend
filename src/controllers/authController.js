@@ -2,17 +2,12 @@ const AuthService = require('../services/authService');
 
 // Handler to register a new user
 const register = (req,res) => {
-    const { username, email, password, phone } = req.body;
-    return AuthService.registerService({res, username, email, password, phone});
+    const { username, email, password, phone, firstname, lastname } = req.body;
+    return AuthService.registerService({res, username, email, password, phone, firstname, lastname});
 };
 
 const login = (req,res) => {
     const { username, password } = req.body;
-    console.log("username", username);
-    console.log(req.body);
-    
-    console.log("password", password);
-    
     return AuthService.loginService({res, username, password});
 }
 
