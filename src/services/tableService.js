@@ -5,6 +5,7 @@ const Table = require('../models/tableModel');
 const cloudinary = require('../config/cloudinary');
 const Menu = require("../models/menuModel");
 const generateAndUploadQRCode = require('../utils/generateQR');
+const sequelize = require('../config/db');
 
 const createTableService = async ({res, name}) => {
     try{
@@ -62,7 +63,7 @@ const createTableService = async ({res, name}) => {
 };
 
 const createTableFromLayoutService = async ({ res, tables }) => {
-    // try {
+    try {
         const newTables = [];
 
         console.log(`Data coming: ${JSON.stringify(tables, null, 2)}`);
@@ -121,10 +122,10 @@ const createTableFromLayoutService = async ({ res, tables }) => {
             }
         }
         return apiResponse(res, 201, 'Tables created or updated successfully', newTables);
-    // } catch (error) {
-    //     console.log(`Error: ${error.message}`);
-    //     return apiResponse(res, 500, error.message);
-    // }
+    } catch (error) {
+        console.log(`Error: ${error.message}`);
+        return apiResponse(res, 500, error.message);
+    }
 };
 
 const getTablesLayoutService = async ({res}) => {
