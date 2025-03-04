@@ -26,10 +26,7 @@ const User = sequelize.define('User', {
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
-      unique: {
-        msg: 'Email address already in use'
-      },
+      allowNull: true,
     },
     password: {
       type: DataTypes.STRING,

@@ -17,9 +17,14 @@ const updateUser = async (req, res) => {
     return UserService.updateUserById({req, res});
 }
 
+const deleteUser = async (req, res) => {
+    return UserService.deleteUserById({req, res});
+}
+
 module.exports = {
     getAllUsers,
     createUser,
     getUser,
-    updateUser
+    updateUser,
+    deleteUser
 };

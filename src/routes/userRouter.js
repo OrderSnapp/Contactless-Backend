@@ -7,6 +7,8 @@ const {authMiddleware, authRoleMiddleware} = require('../middlewares/authMiddlew
 userRouter.get('',authRoleMiddleware(['Admin']), userController.getAllUsers);
 userRouter.post('',authRoleMiddleware(['Admin']), userController.createUser);
 userRouter.get('/:id',authRoleMiddleware(['Admin']), userController.getUser);
-userRouter.put('/:id',authRoleMiddleware(['Admin']), userController.updateUser);
+userRouter.put('/:id', userController.updateUser);
+userRouter.delete('/:id',authRoleMiddleware(['Admin']), userController.deleteUser);
+
 
 module.exports = userRouter;
