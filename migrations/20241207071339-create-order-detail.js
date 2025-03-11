@@ -27,10 +27,14 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
-      Quantity: {
+      quantity: {
         type: Sequelize.INTEGER,
       },
       price: {
+        type: Sequelize.FLOAT,
+        allowNull: false,
+      },
+      total: {
         type: Sequelize.FLOAT,
         allowNull: false,
       },

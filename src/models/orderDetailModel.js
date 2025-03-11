@@ -21,10 +21,13 @@ const OrderDetail = sequelize.define('OrderDetail', {
     menuItemDetailId: {
         type: DataTypes.INTEGER,
     },
-    Quantity: {
+    quantity: {
         type: DataTypes.INTEGER,
     },
     price: {
+        type: DataTypes.FLOAT,
+    },
+    total: {
         type: DataTypes.FLOAT,
     },
     ...timestamp,

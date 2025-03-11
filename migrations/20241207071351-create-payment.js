@@ -16,14 +16,14 @@ module.exports = {
           key: 'id',
         },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        onDelete: 'CASCADE',
       },
       paymentDate: {
         type: Sequelize.DATE,
         allowNull: false,
       },
       paymentMethod: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM('CASH', 'CARD', 'ONLINE'),
         allowNull: false,
       },
       paymentAmount: {
@@ -31,8 +31,11 @@ module.exports = {
         allowNull: false,
       },
       paymentStatus: {
+        type: Sequelize.ENUM('PENDING', 'SUCCESS', 'FAILED'),
+        defaultValue: 'PENDING',
+      },
+      transactionId: {
         type: Sequelize.STRING,
-        allowNull: false,
       },
       createdAt: {
         type: Sequelize.DATE,

@@ -7,7 +7,7 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     const existingUser = await queryInterface.rawSelect('Users', {
       where: {
-        username: 'Sunchengchhay'
+        username: 'admin'
       },
     }, ['id']);
 
@@ -18,9 +18,11 @@ module.exports = {
     if (!existingUser) {
       await queryInterface.bulkInsert('Users', [
         {
-          username: 'Sunchengchhay',
+          username: 'admin',
           email: 'sunchengchhay@gmail.com',
-          password: bcrypt.hashSync('Sonchhay2018@@', salt),
+          password: bcrypt.hashSync('admin123', salt),
+          firstName: 'Chengchhay',
+          lastName: 'Sun',
           phone: '096 777 777',
           createdAt: new Date(),
           updatedAt: new Date(),

@@ -15,5 +15,6 @@ router.use('/reviews', require('./reviewRouter'));
 router.use('/menu-item-details', require('./menuItemDetailRouter'));
 router.use('/settings', require('./settingRouter'));
 router.use('/roles', require('./roleRouter'));
+router.use('/orders', require('./orderRouter'));
 
 module.exports = router;

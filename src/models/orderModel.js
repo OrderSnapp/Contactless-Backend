@@ -2,6 +2,7 @@ const {DataTypes} = require('sequelize');
 const sequelize = require('../config/db');
 const timestamp = require('../utils/timestamp');
 const Table = require('./tableModel');
+const OrderStatusLogs = require('./orderStatusLogsModel');
 
 const Order = sequelize.define('Order', {
     id: {
@@ -10,11 +11,23 @@ const Order = sequelize.define('Order', {
         autoIncrement: true,
     },
     tableId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         references: {
             model: 'Table',
             key: 'id',
         },
+    },
+    orderNumber: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    batchNumber: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    totalQuantity: {
+        type: DataTypes.INTEGER,
+        allowNull:false
     },
     orderDate: {
         type: DataTypes.DATE,
@@ -24,14 +37,32 @@ const Order = sequelize.define('Order', {
         type: DataTypes.FLOAT,
         allowNull: false,
     },
+    subTotal: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+    },
+    tax: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+    },
+    discount: {
+        type: DataTypes.FLOAT,
+    },
+    note: {
+        type: DataTypes.STRING,
+    },
     orderStatus: {
         type: DataTypes.STRING,
-        allowNull: false,
+    },
+    progressStatus: {
+        type: DataTypes.ENUM('PENDING', 'APPROVED', 'ACCEPTED', 'COOKING', 'COOKED', 'COMPLETED'),
+        defaultValue: 'PENDING',
     },
     ...timestamp,
 });
 
 Table.hasMany(Order, { foreignKey: 'tableId' });
 Order.belongsTo(Table, { foreignKey: 'tableId' });
+Order.hasMany(OrderStatusLogs, { foreignKey: 'orderId' });
 
 module.exports = Order;

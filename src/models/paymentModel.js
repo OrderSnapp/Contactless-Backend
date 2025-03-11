@@ -11,6 +11,7 @@ const Payment = sequelize.define('Payment', {
     },
     orderId: {
         type: DataTypes.INTEGER,
+        allowNull: false,
         references: {
             model: 'Orders',
             key: 'id',
@@ -21,7 +22,7 @@ const Payment = sequelize.define('Payment', {
         allowNull: false,
     },
     paymentMethod: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM('CASH', 'CARD', 'ONLINE'),
         allowNull: false,
     },
     paymentAmount: {
@@ -29,8 +30,11 @@ const Payment = sequelize.define('Payment', {
         allowNull: false,
     },
     paymentStatus: {
+        type: DataTypes.ENUM('PENDING', 'SUCCESS', 'FAILED'),
+        defaultValue: 'PENDING',
+    },
+    transactionId: {
         type: DataTypes.STRING,
-        allowNull: false,
     },
     ...timestamp,
 });
