@@ -32,6 +32,4 @@ const OrderStatusLogs = sequelize.define('OrderStatusLogs', {
     tableName: 'OrderStatusLogs',
 });
 
-OrderStatusLogs.belongsTo(Order, { foreignKey: 'orderId' });
-
 module.exports = OrderStatusLogs;

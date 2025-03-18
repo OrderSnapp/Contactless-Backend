@@ -11,13 +11,34 @@ const getSettingService = async ({res}) => {
 }
 
 const updateSettingService = async ({req, res}) => {
+
+    console.log('Start updateSettingService');
+    
+
     try {
 
         const data = req.body
 
-        const setting = await Setting.findByPk(data.id);
+        console.log('request body: ', data);
+
+        let setting = await Setting.findByPk(data.id);
         if (!setting) {
-            return apiResponse(res, 404, 'Setting not found');
+
+            console.log('Setting not found');
+
+            const payload = {
+                theme: data.theme,
+                shopName: data.shopName,
+                shopLogo: data.shopLogo,
+                font: data.font,
+            }
+
+            console.log('Setting not found, creating new setting');
+            setting = await Setting.create(payload);
+
+            console.log('Setting created successfully with payload: ', payload);
+            
+            return apiResponse(res, 200, 'Setting created successfully', setting);
         }
 
         setting.theme = data.theme;
@@ -29,6 +50,7 @@ const updateSettingService = async ({req, res}) => {
         return apiResponse(res, 200, 'Setting updated successfully', setting);
     }
     catch (error) {
+        console.log('Error: ', error.message);
         return apiResponse(res, 500, error.message);
     }
 }

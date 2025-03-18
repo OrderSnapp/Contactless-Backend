@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "userStem202",
-    "password": "AdminStem202",
+    "username": "myuser",
+    "password": "mypassword",
     "database": "contactless",
-    "host": "178.128.208.138",
+    "host": "178.128.20.58",
     "dialect": "postgres"
   },
   "test": {
