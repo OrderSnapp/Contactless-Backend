@@ -4,39 +4,53 @@ const UserRole = require('../models/userRoleModel');
 const apiResponse = require('../utils/apiResponse');
 const { createdBy } = require('../utils/timestamp');
 
-const getAllUsers = async ({res}) => {
-    try{
-        const users = await User.findAll({
-            attributes: [
-                'id', 
-                'firstName', 
-                'lastName', 
-                'username', 
-                'phone',
-                'status',
-                'updatedAt',
-            ],
-        });
+const getAllUsers = async ({ res }) => {
+  try {
+    // Fetch all users
+    const users = await User.findAll({
+      attributes: [
+        'id',
+        'firstName',
+        'lastName',
+        'username',
+        'phone',
+        'status',
+        'updatedAt',
+      ],
+    });
 
-        for(user of users){
-            const userRole = await UserRole.findOne({
-                where: {userId: user.id},
-            });
-            if(userRole){
-                const role = await Role.findByPk(userRole.roleId);
-                user.dataValues.role = role.name;
-            }
-        }
-
-        if (!users) {
-            return apiResponse(res, 404, 'Users not found');
-        }
-
-        return apiResponse(res, 200, 'Users retrieved successfully', users);
-    }catch(err){
-        return apiResponse(res, 400, err.message);
+    if (!users || users.length === 0) {
+      return apiResponse(res, 404, 'Users not found');
     }
-}
+
+    // Fetch all user roles
+    const userRoles = await UserRole.findAll({
+      attributes: ['userId', 'roleId'],
+    });
+
+    // Fetch all roles
+    const roles = await Role.findAll({
+      attributes: ['id', 'name'],
+    });
+
+    // Map roles to users
+    const usersWithRoles = users.map((user) => {
+      const userRole = userRoles.find((ur) => ur.userId === user.id);
+      const role = userRole ? roles.find((r) => r.id === userRole.roleId) : null;
+
+      return {
+        ...user.dataValues,
+        role: role ? role.name : 'No Role',
+      };
+    });
+
+    return apiResponse(res, 200, 'Users retrieved successfully', usersWithRoles);
+  } catch (err) {
+    console.log(err);
+    return apiResponse(res, 400, err.message);
+  }
+};
+
 const createUser = async ({res, req}) => {
     try{
 

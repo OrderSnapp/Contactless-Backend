@@ -1,5 +1,7 @@
 'use strict';
 
+const { updatedBy } = require('../src/utils/timestamp');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -23,7 +25,7 @@ module.exports = {
         type: Sequelize.ENUM('PENDING', 'APPROVED', 'ACCEPTED', 'COOKING', 'COOKED', 'COMPLETED'),
         allowNull: false,
       },
-      changedBy: {
+      createdBy: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
@@ -31,6 +33,14 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
       },
+      updatedAt: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
+      },
+      updatedBy : {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      }
     });
     await queryInterface.addIndex('OrderStatusLogs', ['orderId']);
   },

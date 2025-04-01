@@ -17,11 +17,6 @@ const OrderStatusLogs = sequelize.define('OrderStatusLogs', {
             key: 'id',
         },
     },
-    orderStatus: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-
     status: {
         type: DataTypes.ENUM('PENDING', 'APPROVED', 'ACCEPTED', 'COOKING', 'COOKED', 'COMPLETED'),
         allowNull: false,

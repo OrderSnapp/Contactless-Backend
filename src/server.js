@@ -1,17 +1,19 @@
+const http = require('http');
+const setupWebSocket = require('./websocket');
 const app = require('./app');
 const dotenv = require('dotenv');
 const sequelize = require('./config/db');
 
-// Load environment variables
 dotenv.config();
 
 const PORT = process.env.PORT || 3001;
 
-// Sync database models
+const server = http.createServer(app);
+setupWebSocket(server);
+
 sequelize.sync({ force: false }).then(() => {
-    // `force: false` means data will not be lost
-    console.log('Database synchronized');
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-    });
+  console.log('Database synchronized');
+  server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 });

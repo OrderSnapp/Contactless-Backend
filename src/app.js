@@ -26,10 +26,8 @@ app.use(
     })
   );
 
-// Use the routes
 require('./routes/index')(app);
 
-// Basic route
 app.get('/',(_,res)=>{
     res.send(`Hello From Express version: ${packageJson.dependencies.express}`);
 });
