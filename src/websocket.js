@@ -2,44 +2,30 @@ const WebSocket = require('ws');
 
 function setupWebSocket(server) {
   const wss = new WebSocket.Server({ server });
+  const clients = new Set();
 
   wss.on('connection', (ws) => {
-    console.log('New WebSocket connection established');
+    console.log('New WebSocket connection');
+    clients.add(ws);
 
-    const serviceHandlers = {
-        chat: (data) => {
-          console.log(`Chat service received: ${data.message}`);
-          ws.send(JSON.stringify({ service: 'chat', response: `Chat message received: ${data.message}` }));
-        },
-        notifications: (data) => {
-          console.log(`Notification service received: ${data.message}`);
-          ws.send(JSON.stringify({ service: 'notifications', response: `Notification processed: ${data.message}` }));
-        },
-        echo: (data) => {
-          console.log(`Echo service received: ${data.message}`);
-          ws.send(JSON.stringify({ service: 'echo', response: data.message }));
-        },
-      };
+    ws.on('message', (message) => {
+      console.log('Received:', message.toString());
 
-      ws.on('message', (message) => {
-        try {
-          const parsedMessage = JSON.parse(message);
-          const { service, data } = parsedMessage;
-  
-          if (service && serviceHandlers[service]) {
-            serviceHandlers[service](data); 
-          } else {
-            console.log(`Unknown service: ${service}`);
-            ws.send(JSON.stringify({ service: 'error', response: 'Unknown service' }));
-          }
-        } catch (error) {
-          console.error('Error parsing message:', error);
-          ws.send(JSON.stringify({ service: 'error', response: 'Invalid message format' }));
+      clients.forEach((client) => {
+        if (client !== ws && client.readyState === WebSocket.OPEN) {
+          client.send(message.toString());
         }
       });
+    });
 
     ws.on('close', () => {
-      console.log('WebSocket connection closed');
+      console.log('WebSocket backend connection closed');
+      clients.delete(ws);
+    });
+
+    ws.on('error', (error) => {
+      console.error('WebSocket error:', error);
+      clients.delete(ws);
     });
   });
 
