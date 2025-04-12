@@ -25,6 +25,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      systemUrl:{
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       createdAt:{
         type: Sequelize.DATE,
         allowNull: Sequelize.NOW,

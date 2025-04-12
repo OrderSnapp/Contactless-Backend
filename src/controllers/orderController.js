@@ -8,7 +8,27 @@ const CreateCustomerOrder = async (req, res) => {
     return OrderService.createCustomerOrderService({req,res});
 }
 
+const GetAllOrderbyStatus = async (req, res) => {
+    return OrderService.getAllOrdersByStatusService({req,res});
+}
+
+const GetProgressOrderStatus = async (req, res) => {
+    return OrderService.getProgressOrderStatusService({req,res});
+}
+
+const UpdateOrderStatus = async (req, res) => {
+    return OrderService.updateOrderStatusService({req,res});
+}
+
+const GetAllKitchenStatus = async (req, res) => {
+    return OrderService.getAllKitchenStatusService({req,res});
+}
+
 module.exports = {
     CreateOrder,
-    CreateCustomerOrder
+    CreateCustomerOrder,
+    GetAllOrderbyStatus,
+    GetProgressOrderStatus,
+    UpdateOrderStatus,
+    GetAllKitchenStatus
 };

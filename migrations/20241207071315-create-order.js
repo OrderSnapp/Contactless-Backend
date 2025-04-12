@@ -51,7 +51,7 @@ module.exports = {
         allowNull: false,
       },
       progressStatus: {
-          type: Sequelize.ENUM('PENDING', 'APPROVED', 'ACCEPTED', 'COOKING', 'COOKED', 'COMPLETED'),
+          type: Sequelize.ENUM('PENDING', 'APPROVED', 'ACCEPTED', 'COOKING', 'COOKED', 'COMPLETED','CANCELLED','REJECTED'),
           allowNull: false,
       },
       totalAmount: {

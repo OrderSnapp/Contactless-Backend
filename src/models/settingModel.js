@@ -25,6 +25,10 @@ const Setting = sequelize.define('Setting', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    systemUrl:{
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     ...timestamp,
 });
 

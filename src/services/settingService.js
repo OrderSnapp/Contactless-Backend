@@ -21,12 +21,12 @@ const updateSettingService = async ({req, res}) => {
 
         console.log('request body: ', data);
 
-        let setting = await Setting.findByPk(data.id);
+        let setting = await Setting.findByPk(1);
         if (!setting) {
-
             console.log('Setting not found');
-
+            
             const payload = {
+                id: 1,
                 theme: data.theme,
                 shopName: data.shopName,
                 shopLogo: data.shopLogo,

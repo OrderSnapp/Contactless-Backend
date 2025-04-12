@@ -33,10 +33,9 @@ const OrderDetail = sequelize.define('OrderDetail', {
     ...timestamp,
 });
 
-Order.hasMany(OrderDetail,{foreignKey: 'orderId'});
-OrderDetail.belongsTo(Order,{foreignKey: 'orderId'});
+Order.hasMany(OrderDetail,{foreignKey: 'orderId' ,as: 'items'});
+OrderDetail.belongsTo(Order,{foreignKey: 'orderId', as: 'items'});
 MenuItemDetail.hasMany(OrderDetail,{foreignKey: 'menuItemDetailId'});
 OrderDetail.belongsTo(MenuItemDetail,{foreignKey: 'menuItemDetailId'});
-
 
 module.exports = OrderDetail;

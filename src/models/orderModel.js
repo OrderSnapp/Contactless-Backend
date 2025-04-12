@@ -55,14 +55,14 @@ const Order = sequelize.define('Order', {
         type: DataTypes.STRING,
     },
     progressStatus: {
-        type: DataTypes.ENUM('PENDING', 'APPROVED', 'ACCEPTED', 'COOKING', 'COOKED', 'COMPLETED'),
+        type: DataTypes.ENUM('PENDING','ACCEPTED', 'COOKING', 'COOKED', 'COMPLETED', 'CANCELLED','REJECTED'),
         defaultValue: 'PENDING',
     },
     ...timestamp,
 });
 
-Table.hasMany(Order, { foreignKey: 'tableId' });
-Order.belongsTo(Table, { foreignKey: 'tableId' });
+Table.hasMany(Order, { foreignKey: 'tableId', as: 'table' });
+Order.belongsTo(Table, { foreignKey: 'tableId', as: 'table' });
 Order.hasMany(OrderStatusLogs, { foreignKey: 'orderId' });
 
 module.exports = Order;

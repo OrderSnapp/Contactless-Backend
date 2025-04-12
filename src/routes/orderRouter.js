@@ -5,6 +5,10 @@ const orderController = require('../controllers/orderController');
 
 orderRouter.post('', orderController.CreateOrder);
 orderRouter.post('/customer-orders', orderController.CreateCustomerOrder);
+orderRouter.get('/order-status/:status', orderController.GetAllOrderbyStatus);
+orderRouter.get('/progress-status', orderController.GetProgressOrderStatus);
+orderRouter.post('/update-status/:orderNumber', orderController.UpdateOrderStatus);
+orderRouter.get('/kitchen-status', orderController.GetAllKitchenStatus);
 
 module.exports = orderRouter;
 
