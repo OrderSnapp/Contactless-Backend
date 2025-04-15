@@ -21,7 +21,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 20
+        node-version: 21
         
     - name: Install dependencies
       run: npm ci
@@ -50,4 +50,4 @@ jobs:
           docker stop backend-contactless || true
           docker rm backend-contactless || true
           docker pull ${{ secrets.DOCKER_USERNAME }}/backend-contactless:latest
-          docker run -d --name backend-contactless --env-file /home/server/appConfig/.env -p 3001:3001 ${{ secrets.DOCKER_USERNAME }}/backend-contactless:latest
+          docker run -d --name backend-contactless --env-file /chhay/Contactless-Backend/.env -p 3001:3001 ${{ secrets.DOCKER_USERNAME }}/backend-contactless:latest
