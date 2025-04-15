@@ -73,6 +73,11 @@ const createTableFromLayoutService = async ({ res, tables }) => {
 
         console.log(`Data coming: ${JSON.stringify(tables, null, 2)}`);
 
+        let setting = await Setting.findOne({where: {id: 1}});
+        if (!setting) {
+            return apiResponse(res, 404, 'setting not set');
+        }
+
         for (const table of tables) {
 
             let existingTable;
@@ -107,7 +112,7 @@ const createTableFromLayoutService = async ({ res, tables }) => {
                     qrImage: table.qrImage
                 });
 
-                const qrUrlData = `http://localhost:3000/customer/menu?table=${newTable.id}`;
+                const qrUrlData = `${setting.systemUrl}/customer/menu?table=${newTable.id}`;
                 const folderName = 'table-qr-codes';
                 const secureUrl = await generateAndUploadQRCode(qrUrlData, folderName);
                 const menu = await Menu.findOne({where: {default: true}});
