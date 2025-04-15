@@ -6,18 +6,23 @@ const cloudinary = require('../config/cloudinary');
 const Menu = require("../models/menuModel");
 const generateAndUploadQRCode = require('../utils/generateQR');
 const sequelize = require('../config/db');
+const Setting = require('../models/settingModel');
 
 const createTableService = async ({res, name}) => {
     try{
 
         let menu = await Menu.findOne({where: {default: true}});
+        let setting = await Setting.findOne({where: {id: 1}});
+        if (!setting) {
+            return apiResponse(res, 404, 'setting not set');
+        }
 
         let newRecord = await Table.create({ name, qrImage: '123', menuId: menu.id });
 
         const options = {
             width: 300,
             height: 300,
-            data: `http://localhost:3000/customer/menu?table=${newRecord.id}`,
+            data: `${setting.systemUrl}/customer/menu?table=${newRecord.id}`,
             image: "",
             dotsOptions: {
                 color: "#4267b2",
