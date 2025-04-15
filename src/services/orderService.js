@@ -96,6 +96,7 @@ const getAllOrdersByStatusService = async ({ req, res }) => {
     ],
     where: {
       progressStatus: dbStatus,
+      orderStatus: 'UNPAID',
     },
   });
 
@@ -123,19 +124,31 @@ const getProgressOrderStatusService = async ({ req, res }) => {
   
   try{
     const pendingCount = await Order.count({
-      where: { progressStatus: 'PENDING' }
+      where: { 
+        progressStatus: 'PENDING',
+        orderStatus: 'UNPAID'
+       }
     });
 
     const acceptedCount = await Order.count({
-      where: { progressStatus: 'ACCEPTED' }
+      where: { 
+          progressStatus: 'ACCEPTED',
+          orderStatus: 'UNPAID',
+       }
     });
     
     const cookingCount = await Order.count({
-      where: { progressStatus: 'COOKING' }
+      where: { 
+        progressStatus: 'COOKING',
+        orderStatus: 'UNPAID'
+      }
     });
     
     const cookedCount = await Order.count({
-      where: { progressStatus: 'COOKED' }
+      where: { 
+        progressStatus: 'COOKED',
+        orderStatus: 'UNPAID'
+      }
     });
   
     const orderStatusCounts = {
@@ -212,7 +225,8 @@ const getAllKitchenStatusService = async ({ req, res }) => {
         },
       ],
       where: {
-        progressStatus: ['ACCEPTED', 'COOKING', 'COOKED']
+        progressStatus: ['ACCEPTED', 'COOKING', 'COOKED'],
+        orderStatus: 'UNPAID',
       },
     });
 
