@@ -11,29 +11,29 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 app.use(cors({
   // origin: 'http://localhost:3000',
-  origin: 'https://prod.sunchengchhay.me',
+  origin: ['http://localhost:3000', 'https://prod.sunchengchhay.me'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));
 
 app.use(express.json());
 app.use(
-    session({
-      secret: process.env.SESSION_SECRET,
-      resave: false,
-      saveUninitialized: true,
-      cookie: {
-        httpOnly: true,
-        secure: false,
-        maxAge: 1800 * 1000,
-      },
-    })
-  );
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      httpOnly: true,
+      secure: false,
+      maxAge: 1800 * 1000,
+    },
+  })
+);
 
 require('./routes/index')(app);
 
-app.get('/',(_,res)=>{
-    res.send(`Hello From Express version: ${packageJson.dependencies.express}`);
+app.get('/', (_, res) => {
+  res.send(`Hello From Express version: ${packageJson.dependencies.express}`);
 });
 
 module.exports = app;
