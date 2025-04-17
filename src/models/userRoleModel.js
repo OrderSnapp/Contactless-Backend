@@ -10,14 +10,14 @@ const UserRole = sequelize.define('UserRole', {
         autoIncrement: true,
         allowNull: false,
     },
-    UserId: {
+    userId: {
         type: DataTypes.INTEGER,
         references: {
             model: User,
             key: 'id'
         }
     },
-    RoleId: {
+    roleId: {
         type: DataTypes.INTEGER,
         references: {
             model: Role,
