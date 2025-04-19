@@ -68,8 +68,6 @@ const createUser = async ({res, req}) => {
             }
         );
         
-        console.log(user);
-        
         const role = await UserRole.create({
             userId: user.id,
             roleId: data.role

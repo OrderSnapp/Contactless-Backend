@@ -4,9 +4,55 @@ const OrderStatusLogs = require('../models/orderStatusLogsModel');
 const OrderItem = require('../models/orderDetailModel');
 const MenuItemDetail = require('../models/menuItemDetailModel');
 const Table = require('../models/tableModel');
+const { Op } = require('sequelize');
 
 const createOrderService = async ({ req, res }) => {
-  return apiResponse(res, 201, 'Review created successfully');
+  const data = req.body;
+  const items = data.items;
+
+  try{
+    const order = {
+      tableId: data.table.id,
+      orderNumber: data.orderNumber,
+      batchNumber: data.batchNumber,
+      subTotal: data.subtotal,
+      totalQuantity: data.total_quantity,
+      tax: data.tax,
+      discount: data.discount,
+      note: data.note,
+      orderDate: Date.now(),
+      orderStatus: 'UNPAID',
+      totalAmount: data.total,
+      progressStatus: 'ACCEPTED',
+  }
+
+  const orderData = await Order.create(order);
+  items.forEach(async (item) => {
+    await OrderItem.create({
+      orderId: orderData.id,
+      menuItemDetailId: item.id,
+      quantity: item.quantity,
+      price: item.price,
+      total: item.total
+    });
+  });
+
+  const orderStatusLogs = {
+    orderId: orderData.id,
+    status: 'PENDING',
+    createdBy: 1,
+    updatedBy: 1,
+    updatedAt: Date.now(),
+    createdAt: Date.now(),
+  };
+
+  await OrderStatusLogs.create(orderStatusLogs);
+  
+    return apiResponse(res, 201, 'Review created successfully',data.orderNumber);
+  }catch(err){
+    console.error('Error creating order:', err);
+    return apiResponse(res, 500, 'Internal server error');
+  }
 };
 
 const createCustomerOrderService = async ({ req, res }) => {
@@ -74,48 +120,55 @@ const getAllOrdersByStatusService = async ({ req, res }) => {
     return apiResponse(res, 400, 'Invalid status parameter. Must be pending, cooking, or ready');
   }
 
-  const orders = await Order.findAll({
-    attributes: ['id', 'orderNumber', 'totalAmount', ['orderDate', 'orderTime'], 'progressStatus'],
-    include: [
-      {
-        model: OrderItem,
-        as: 'items',
-        attributes: ['id', 'quantity', 'price', 'total'],
-        include: [
-          {
-            model: MenuItemDetail,
-            attributes: ['name'],
-          },
-        ],
+  try{
+    const orders = await Order.findAll({
+      attributes: ['id', 'orderNumber', ['totalAmount','total'], ['orderDate', 'orderTime'], 'progressStatus'],
+      include: [
+        {
+          model: OrderItem,
+          as: 'items',
+          attributes: ['id', 'quantity', 'price', 'total'],
+          include: [
+            {
+              model: MenuItemDetail,
+              attributes: ['name'],
+            },
+          ],
+        },
+        {
+          model: Table,
+          as: 'table',
+          attributes: ['id', ['number', 'tableNumber']],
+        },
+      ],
+      where: {
+        progressStatus: dbStatus,
+        orderStatus: 'UNPAID',
+        tableId: { [Op.not]: null }
       },
-      {
-        model: Table,
-        as: 'table',
-        attributes: ['id', ['number', 'tableNumber']],
-      },
-    ],
-    where: {
-      progressStatus: dbStatus,
-      orderStatus: 'UNPAID',
-    },
-  });
-
-  const transformedOrders = orders.map(order => {
-    const transformedItems = order.items.map(item => ({
-      id: item.id,
-      quantity: item.quantity,
-      price: item.price,
-      total: item.total,
-      name: item.MenuItemDetail?.name,
-    }));
-    
-    return {
-      ...order.toJSON(),
-      items: transformedItems,
-    };
-  });
-
-  return apiResponse(res, 200, `${status} orders retrieved successfully`, transformedOrders);
+    });
+  
+    const transformedOrders = orders.map(order => {
+      const transformedItems = order.items.map(item => ({
+        id: item.id,
+        quantity: item.quantity,
+        price: item.price,
+        total: item.totalAmount,
+        name: item.MenuItemDetail?.name,
+      }));
+      
+      return {
+        ...order.toJSON(),
+        items: transformedItems,
+      };
+    });
+  
+    return apiResponse(res, 200, `${status} orders retrieved successfully`, transformedOrders);
+  }
+  catch(err){
+    console.error('Error retrieving orders:', err);
+    return apiResponse(res, 500, 'Internal server error');
+  }
 };
 
 const getProgressOrderStatusService = async ({ req, res }) => {
@@ -126,7 +179,8 @@ const getProgressOrderStatusService = async ({ req, res }) => {
     const pendingCount = await Order.count({
       where: { 
         progressStatus: 'PENDING',
-        orderStatus: 'UNPAID'
+        orderStatus: 'UNPAID',
+        tableId: { [Op.not]: null }
        }
     });
 
@@ -134,20 +188,23 @@ const getProgressOrderStatusService = async ({ req, res }) => {
       where: { 
           progressStatus: 'ACCEPTED',
           orderStatus: 'UNPAID',
+          tableId: { [Op.not]: null }
        }
     });
     
     const cookingCount = await Order.count({
       where: { 
         progressStatus: 'COOKING',
-        orderStatus: 'UNPAID'
+        orderStatus: 'UNPAID',
+        tableId: { [Op.not]: null }
       }
     });
     
     const cookedCount = await Order.count({
       where: { 
         progressStatus: 'COOKED',
-        orderStatus: 'UNPAID'
+        orderStatus: 'UNPAID',
+        tableId: { [Op.not]: null }
       }
     });
   
@@ -171,7 +228,8 @@ const updateOrderStatusService = async ({ req, res }) => {
 
   console.log(status);
   
-  const order = await Order.findOne({ where: { orderNumber } });
+  try{
+    const order = await Order.findOne({ where: { orderNumber } });
   
   if (!order) {
     return apiResponse(res, 404, 'Order not found');
@@ -200,6 +258,11 @@ const updateOrderStatusService = async ({ req, res }) => {
   await OrderStatusLogs.create(orderStatusLogs);
 
   return apiResponse(res, 200, 'Order status updated successfully');
+  }
+  catch(err){
+    console.error('Error updating order status:', err);
+    return apiResponse(res, 500, 'Internal server error');
+  }
 }
 
 const getAllKitchenStatusService = async ({ req, res }) => {
@@ -227,6 +290,7 @@ const getAllKitchenStatusService = async ({ req, res }) => {
       where: {
         progressStatus: ['ACCEPTED', 'COOKING', 'COOKED'],
         orderStatus: 'UNPAID',
+        tableId: { [Op.not]: null }
       },
     });
 

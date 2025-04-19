@@ -5,8 +5,12 @@ const Table = require('../models/tableModel');
 const cloudinary = require('../config/cloudinary');
 const Menu = require("../models/menuModel");
 const generateAndUploadQRCode = require('../utils/generateQR');
-const sequelize = require('../config/db');
 const Setting = require('../models/settingModel');
+const { Op } = require('sequelize');
+const Order = require("../models/orderModel");
+const OrderItemDetail = require("../models/orderDetailModel");
+const MenuItemDetail = require("../models/menuItemDetailModel");
+const OrderStatusLogs = require("../models/orderStatusLogsModel");
 
 const createTableService = async ({res, name}) => {
     try{
@@ -209,6 +213,65 @@ const deleteTableService = async ({res, id}) =>{
     }
 }
 
+const getTableOrderByTableId = async ({ req, res }) => {
+    const data = req.body;
+    console.log('request body: ', data);
+
+    try {
+        const orderWithDetails = await Order.findOne({
+            where: {
+                tableId: data.tableId,
+                orderStatus: 'UNPAID',
+                progressStatus: { [Op.ne]: 'PENDING' }
+            },
+            attributes: {
+                exclude: ['createdAt', 'updatedAt', 'createdBy', 'updatedBy']
+            },
+            include: [
+                {
+                    model: Table,
+                    as: 'table',
+                    attributes: {
+                        exclude: ['createdAt', 'updatedAt', 'createdBy', 'updatedBy']
+                    }
+                },
+                {
+                    model: OrderItemDetail,
+                    as: 'items',
+                    required: false,
+                    attributes: {
+                        exclude: ['createdAt', 'updatedAt', 'createdBy', 'updatedBy']
+                    },
+                    include: [
+                        {
+                            model: MenuItemDetail,
+                            attributes: {
+                                exclude: ['createdAt', 'updatedAt', 'createdBy', 'updatedBy']
+                            }
+                        }
+                    ]
+                },
+                // {
+                //     model: OrderStatusLogs,
+                //     required: false,
+                //     attributes: {
+                //         exclude: ['createdAt', 'updatedAt']
+                //     }
+                // }
+            ]
+        });
+
+        if (!orderWithDetails) {
+            return apiResponse(res, 404, 'Table not found');
+        }
+
+        return apiResponse(res, 200, 'Table retrieved successfully', orderWithDetails);
+    } catch (err) {
+        console.error('Error getting table order by table id:', err);
+        return apiResponse(res, 500, 'Internal server error');
+    }
+};
+
 module.exports = { 
     createTableService,
     getTablesService,
@@ -217,4 +280,5 @@ module.exports = {
     updateTableService,
     getTablesLayoutService,
     createTableFromLayoutService,
+    getTableOrderByTableId
  };

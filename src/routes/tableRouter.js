@@ -10,5 +10,6 @@ tableRouter.get('/layout', tableController.getTablesLayout);
 tableRouter.get('/:id', tableController.getTable);
 tableRouter.put('/:id', tableController.updateTable);
 tableRouter.delete('/:id', tableController.deleteTable);
+tableRouter.get('/order/items', tableController.getTableOrderByTableId);
 
 module.exports = tableRouter;

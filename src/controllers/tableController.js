@@ -33,6 +33,10 @@ const createTableFromLayout = async (req, res) => {
     return TableService.createTableFromLayoutService({res, tables});
 }
 
+const getTableOrderByTableId = async (req, res) => {
+    return TableService.getTableOrderByTableId({req, res});
+}
+
 module.exports = {
     createTable,
     getTables,
@@ -40,5 +44,6 @@ module.exports = {
     updateTable,
     deleteTable,
     getTablesLayout,
-    createTableFromLayout
+    createTableFromLayout,
+    getTableOrderByTableId
 };
