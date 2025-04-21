@@ -6,7 +6,7 @@ const cloudinary = require('../config/cloudinary');
 const Menu = require("../models/menuModel");
 const generateAndUploadQRCode = require('../utils/generateQR');
 const Setting = require('../models/settingModel');
-const { Op } = require('sequelize');
+const { Op, or } = require('sequelize');
 const Order = require("../models/orderModel");
 const OrderItemDetail = require("../models/orderDetailModel");
 const MenuItemDetail = require("../models/menuItemDetailModel");
@@ -231,9 +231,7 @@ const getTableOrderByTableId = async ({ req, res }) => {
                 {
                     model: Table,
                     as: 'table',
-                    attributes: {
-                        exclude: ['createdAt', 'updatedAt', 'createdBy', 'updatedBy']
-                    }
+                    attributes: ['id','name']
                 },
                 {
                     model: OrderItemDetail,
@@ -251,13 +249,6 @@ const getTableOrderByTableId = async ({ req, res }) => {
                         }
                     ]
                 },
-                // {
-                //     model: OrderStatusLogs,
-                //     required: false,
-                //     attributes: {
-                //         exclude: ['createdAt', 'updatedAt']
-                //     }
-                // }
             ]
         });
 
@@ -265,7 +256,33 @@ const getTableOrderByTableId = async ({ req, res }) => {
             return apiResponse(res, 404, 'Table not found');
         }
 
-        return apiResponse(res, 200, 'Table retrieved successfully', orderWithDetails);
+        const tableOrder = {
+            table:{
+                id: orderWithDetails.table.id,
+                name: orderWithDetails.table.name
+            },
+            items: orderWithDetails.items.map(item => ({
+                id: item.MenuItemDetail.id,
+                name:item.MenuItemDetail.name,
+                imageUrl: item.MenuItemDetail.imageUrl,
+                price: item.price,
+                quantity: item.quantity,
+                total: item.total
+            })),
+            total_quantity: orderWithDetails.total,
+            note: orderWithDetails.note,
+            subtotal: orderWithDetails.subTotal,
+            tax: orderWithDetails.tax,
+            discount: orderWithDetails.discount,
+            total: orderWithDetails.totalAmount,
+            orderStatus: orderWithDetails.orderStatus,
+            orderTime: '',
+            orderDate: orderWithDetails.orderDate,
+            batchNumber: orderWithDetails.batchNumber,
+            orderNumber: orderWithDetails.orderNumber,
+        }
+
+        return apiResponse(res, 200, 'Table retrieved successfully', tableOrder);
     } catch (err) {
         console.error('Error getting table order by table id:', err);
         return apiResponse(res, 500, 'Internal server error');
