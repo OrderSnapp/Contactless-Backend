@@ -34,8 +34,13 @@ module.exports = {
         type: Sequelize.ENUM('PENDING', 'SUCCESS', 'FAILED'),
         defaultValue: 'PENDING',
       },
-      transactionId: {
-        type: Sequelize.STRING,
+      receiveAmount:{
+        type: Sequelize.FLOAT,
+        allowNull: true,
+      },
+      changeAmount:{
+        type: Sequelize.FLOAT,
+        allowNull: true,
       },
       createdAt: {
         type: Sequelize.DATE,

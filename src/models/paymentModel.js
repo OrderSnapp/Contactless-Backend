@@ -33,8 +33,13 @@ const Payment = sequelize.define('Payment', {
         type: DataTypes.ENUM('PENDING', 'SUCCESS', 'FAILED'),
         defaultValue: 'PENDING',
     },
-    transactionId: {
-        type: DataTypes.STRING,
+    receiveAmount:{
+        type: DataTypes.FLOAT,
+        allowNull: true,
+    },
+    changeAmount:{
+        type: DataTypes.FLOAT,
+        allowNull: true,
     },
     ...timestamp,
 });

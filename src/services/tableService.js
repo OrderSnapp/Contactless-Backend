@@ -10,7 +10,6 @@ const { Op, or } = require('sequelize');
 const Order = require("../models/orderModel");
 const OrderItemDetail = require("../models/orderDetailModel");
 const MenuItemDetail = require("../models/menuItemDetailModel");
-const OrderStatusLogs = require("../models/orderStatusLogsModel");
 
 const createTableService = async ({res, name}) => {
     try{
@@ -257,6 +256,7 @@ const getTableOrderByTableId = async ({ req, res }) => {
         }
 
         const tableOrder = {
+            id:orderWithDetails.id,
             table:{
                 id: orderWithDetails.table.id,
                 name: orderWithDetails.table.name
