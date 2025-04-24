@@ -65,8 +65,10 @@ const generateKhqr = async ({ req, res }) => {
         tag: TAG.INDIVIDUAL,
         accountID: "sun_chengchhay@aclb",
         merchantName: "OrderSnapp",
-        currency: CURRENCY.USD,
-        amount: data.amount,
+        // currency: CURRENCY.USD,
+        // amount: data.amount,
+        currency: CURRENCY.KHR,
+        amount: 100,
         additionalData: {
             mobileNumber: "85510752924",
             billNumber: data.orderNumber,
@@ -82,7 +84,86 @@ const generateKhqr = async ({ req, res }) => {
     });
 };
 
+const checkTransaction = async({ req, res }) => {
+    try{
+        const orderNumber = req.body.orderNumber;
+
+        const response = await fetch(`${process.env.KHQR_BASEURL}/check_transaction_by_md5`, {
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.KHQR_TOKEN}`
+            },
+            body: JSON.stringify({
+                md5: req.body.md5
+            })
+        });
+
+        if (!response.ok) {
+            console.error('Error response from API:', response.statusText);
+            return apiResponse(res, response.status, 'Error checking transaction');
+        }
+
+        const data = await response.json();
+
+        console.log('Check transaction response:', data);
+
+        if(data.responseCode == 0){
+            const order = await Order.findOne({ where: { orderNumber: orderNumber } });
+            if(!order){
+                return apiResponse(res, 404, 'Order not found');
+            }
+            const orderHistory = await OrderStatusLogs.findOne({
+                where: { orderId: order.id }
+            });
+            if(!orderHistory){
+                console.log(`Order Log Status not found for orderId = ${order.id}`);
+            }
+            order.orderStatus = 'PAID';
+            order.progressStatus = 'COMPLETED';
+            await order.save();
+
+            if(orderHistory){
+                orderHistory.status = 'COMPLETED';
+                orderHistory.updatedAt = new Date();
+                await orderHistory.save();
+            }
+
+            await Payment.create({
+                orderId: order.id,
+                paymentDate: new Date(),
+                paymentMethod: 'ONLINE',
+                paymentAmount: data.data.amount,
+                paymentStatus: 'SUCCESS',
+                receiveAmount:  data.data.amount,
+                changeAmount: 0,
+            });
+            console.log('Payment created successfully');
+
+            return apiResponse(res, 200, 'Transaction found',1);
+        }
+
+        else if(data.responseCode == 1 && data.errorCode == 1){
+            return apiResponse(res, 200, 'Transaction Pending/NotFound', 2);
+        }
+
+        else if(data.responseCode == 1 && data.errorCode in [2, 12]){
+            return apiResponse(res, 200, 'Transaction error', 3);
+        }
+
+        return apiResponse(res, 200, 'Transaction not found', 2);
+
+    }
+    catch(error){
+        console.error('Error checking transaction:', error);
+        return apiResponse(res, 500, 'Internal Server Error');
+    }
+};
+
+
+
 module.exports = {
     createPayment,
-    generateKhqr
+    generateKhqr,
+    checkTransaction
 };

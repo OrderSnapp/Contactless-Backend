@@ -22,7 +22,7 @@ const Payment = sequelize.define('Payment', {
         allowNull: false,
     },
     paymentMethod: {
-        type: DataTypes.ENUM('CASH', 'CARD', 'ONLINE'),
+        type: DataTypes.ENUM('CASH', 'CARD', 'ONLINE','KHQR'),
         allowNull: false,
     },
     paymentAmount: {
@@ -39,6 +39,10 @@ const Payment = sequelize.define('Payment', {
     },
     changeAmount:{
         type: DataTypes.FLOAT,
+        allowNull: true,
+    },
+    ccy: {
+        type: DataTypes.STRING,
         allowNull: true,
     },
     ...timestamp,

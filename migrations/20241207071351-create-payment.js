@@ -42,6 +42,10 @@ module.exports = {
         type: Sequelize.FLOAT,
         allowNull: true,
       },
+      ccy: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: true,
