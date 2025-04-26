@@ -221,7 +221,8 @@ const getTableOrderByTableId = async ({ req, res }) => {
             where: {
                 tableId: data.tableId,
                 orderStatus: 'UNPAID',
-                progressStatus: { [Op.ne]: 'PENDING' }
+                progressStatus: 'COOKED'
+                // progressStatus: { [Op.ne]: 'PENDING' }
             },
             attributes: {
                 exclude: ['createdAt', 'updatedAt', 'createdBy', 'updatedBy']
