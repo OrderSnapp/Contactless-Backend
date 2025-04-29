@@ -17,5 +17,6 @@ router.use('/settings', require('./settingRouter'));
 router.use('/roles', require('./roleRouter'));
 router.use('/orders', require('./orderRouter'));
 router.use('/payments', require('./paymentRouter'));
+router.use('/dashboard', require('./dashboard.router'));
 
 module.exports = router;

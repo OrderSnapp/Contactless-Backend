@@ -9,6 +9,7 @@ const { Op } = require('sequelize');
 const createOrderService = async ({ req, res }) => {
   const data = req.body;
   const items = data.items;
+  const currentDate = new Date();
 
   try{
     const order = {
@@ -20,7 +21,7 @@ const createOrderService = async ({ req, res }) => {
       tax: data.tax,
       discount: data.discount,
       note: data.note,
-      orderDate: Date.now(),
+      orderDate: currentDate,
       orderStatus: 'UNPAID',
       totalAmount: data.total,
       progressStatus: 'ACCEPTED',
@@ -42,8 +43,8 @@ const createOrderService = async ({ req, res }) => {
     status: 'PENDING',
     createdBy: 1,
     updatedBy: 1,
-    updatedAt: Date.now(),
-    createdAt: Date.now(),
+    updatedAt: currentDate,
+    createdAt: currentDate,
   };
 
   await OrderStatusLogs.create(orderStatusLogs);
