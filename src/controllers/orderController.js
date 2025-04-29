@@ -24,11 +24,16 @@ const GetAllKitchenStatus = async (req, res) => {
     return OrderService.getAllKitchenStatusService({req,res});
 }
 
+const getNewPendingOrderNotification = async (req, res) => {
+    return OrderService.getNewPendingOrderNotificationService({req,res});
+}
+
 module.exports = {
     CreateOrder,
     CreateCustomerOrder,
     GetAllOrderbyStatus,
     GetProgressOrderStatus,
     UpdateOrderStatus,
-    GetAllKitchenStatus
+    GetAllKitchenStatus,
+    getNewPendingOrderNotification
 };

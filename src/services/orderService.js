@@ -60,10 +60,10 @@ const createCustomerOrderService = async ({ req, res }) => {
   const data = req.body;
   const items = data.items;
 
-  console.log(data);
+  console.log(data.table.tableNumber);
 
  const order = {
-    tableId: data.tableNumber,
+    tableId: data.table.tableNumber,
     orderNumber: data.orderNumber,
     batchNumber: data.batchNumber,
     subTotal: data.subtotal,
@@ -237,6 +237,7 @@ const updateOrderStatusService = async ({ req, res }) => {
   }
 
   const statusMapping = {
+    reject:'REJECTED',
     accepted: 'ACCEPTED',
     cooking: 'COOKING',
     ready : 'COOKED',
@@ -339,6 +340,42 @@ const getAllKitchenStatusService = async ({ req, res }) => {
     return apiResponse(res, 500, 'Internal server error');
   }
 };
+
+const getNewPendingOrderNotificationService = async ({req,res}) => {
+  try {
+    const pendingOrders = await Order.findAll({
+      attributes: ['id','orderNumber', ['orderDate','orderTime']],
+      where: {
+        progressStatus: 'PENDING',
+        orderStatus: 'UNPAID',
+        tableId: { [Op.not]: null }
+      },
+      include: [
+        {
+          model: Table,
+          as: 'table',
+          attributes: ['id', 'number'],
+        },
+      ],
+    });
+
+    const formattedPendingOrders = pendingOrders.map(order => {
+      const plainOrder = order.get({ plain: true });
+      
+      return {
+        id: plainOrder.id,
+        orderNumber: plainOrder.orderNumber,
+        tableNumber: plainOrder.table.number,
+        orderTime: plainOrder.orderTime,
+      };
+    });
+
+    return apiResponse(res, 200, 'New pending order notification retrieved successfully', formattedPendingOrders);
+  } catch (error) {
+    console.error('Error fetching new pending order notification:', error);
+    return apiResponse(res, 500, 'Internal server error');
+  }
+};
   
 module.exports = {
   createOrderService,
@@ -346,6 +383,7 @@ module.exports = {
   getAllOrdersByStatusService,
   getProgressOrderStatusService,
   updateOrderStatusService,
-  getAllKitchenStatusService
+  getAllKitchenStatusService,
+  getNewPendingOrderNotificationService
 }
   
