@@ -11,5 +11,6 @@ dashboardRouter.get('/get-top-selling-items', dashboardController.getTopSellingI
 // New route to get categories order by date
 dashboardRouter.get('/get-categories-order-by-date', dashboardController.getCategoriesOrderByDate);
 dashboardRouter.get('/get-top-selling-items-by-date', dashboardController.getTopSellingItemsByDate);
+dashboardRouter.get('/get-sales-table-data', dashboardController.getTopSellingItemsByDateRange);
 
 module.exports = dashboardRouter;

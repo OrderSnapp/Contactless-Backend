@@ -3,11 +3,12 @@ const Order = require('../models/orderModel');
 const OrderDetail = require('../models/orderDetailModel');
 const MenuItemDetail = require('../models/menuItemDetailModel');
 const MenuItem = require('../models/menuItemModel');
+const { fn, col, literal, Op } = require('sequelize');
+const moment = require('moment');
+const Payment = require('../models/paymentModel');
+const Table = require('../models/tableModel');
 
 const getDashboardStats = async ({req, res}) => {
-    const { Op, fn, col } = require('sequelize');
-    const moment = require('moment');
-
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     yesterday.setHours(0, 0, 0, 0);
@@ -137,9 +138,6 @@ const getDashboardStats = async ({req, res}) => {
 
 const getDailyMonitorStats = async ({req, res}) => {
     try{
-        const { Op, fn, col, literal } = require('sequelize');
-        const moment = require('moment');
-
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -194,9 +192,6 @@ const getDailyMonitorStats = async ({req, res}) => {
 };
 
 const getWeeklyOrders = async ({req, res}) => {
-    const { Op, fn, col } = require('sequelize');
-    const moment = require('moment');
-
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
@@ -266,9 +261,6 @@ const getWeeklyOrders = async ({req, res}) => {
 };
 
 const getCategoriesOrder = async ({ req, res }) => {
-    const { fn, col, Op } = require('sequelize');
-    const moment = require('moment');
-
     try {
         const startOfToday = moment().startOf('day').toDate();
         const endOfToday = moment().endOf('day').toDate();
@@ -347,9 +339,6 @@ const getCategoriesOrder = async ({ req, res }) => {
 
 const getTopSellingItems = async ({ req, res }) => {
     try {
-        const { fn, col, literal, Op } = require('sequelize');
-        const moment = require('moment');
-
         const startOfToday = moment().startOf('day').toDate();
         const endOfToday = moment().endOf('day').toDate();
 
@@ -401,11 +390,12 @@ const getTopSellingItems = async ({ req, res }) => {
 };
 
 const getCategoriesOrderByDate = async (req, res ) => {
-    const { fn, col, Op } = require('sequelize');
-    const moment = require('moment');
+    console.log('getCategoriesOrderByDate called');
+    console.log('Query:', req.query);
 
     try {
         const { dateFilter = 'today' } = req.query;
+
         let startDate, endDate;
 
         switch (dateFilter) {
@@ -413,16 +403,15 @@ const getCategoriesOrderByDate = async (req, res ) => {
                 startDate = moment().startOf('day').toDate();
                 endDate = moment().endOf('day').toDate();
                 break;
-            case 'this_week':
+            case 'week':
                 startDate = moment().startOf('week').toDate();
                 endDate = moment().endOf('day').toDate();
                 break;
-            case 'this_month':
-                startDate = moment().startOf('month').toDate();
+            case 'month':
+                startDate = moment().subtract(1, 'month').toDate();
                 endDate = moment().endOf('day').toDate();
                 break;
             default:
-                // Default to today for any other value
                 startDate = moment().startOf('day').toDate();
                 endDate = moment().endOf('day').toDate();
         }
@@ -500,8 +489,8 @@ const getCategoriesOrderByDate = async (req, res ) => {
 };
 
 const getTopSellingItemsByDate = async (req, res) => {
-    const { fn, col, literal, Op } = require('sequelize');
-    const moment = require('moment');
+    console.log('getTopSellingItemsByDate called');
+    console.log('Query:', req.query);
 
     const { dateFilter = 'today' } = req.query;
     try {
@@ -512,16 +501,15 @@ const getTopSellingItemsByDate = async (req, res) => {
                 startDate = moment().startOf('day').toDate();
                 endDate = moment().endOf('day').toDate();
                 break;
-            case 'this_week':
+            case 'week':
                 startDate = moment().startOf('week').toDate();
                 endDate = moment().endOf('day').toDate();
                 break;
-            case 'this_month':
-                startDate = moment().startOf('month').toDate();
+            case 'month':
+                startDate = moment().subtract(1, 'month').toDate();
                 endDate = moment().endOf('day').toDate();
                 break;
             default:
-                // Default to today for any other value
                 startDate = moment().startOf('day').toDate();
                 endDate = moment().endOf('day').toDate();
         }
@@ -532,7 +520,7 @@ const getTopSellingItemsByDate = async (req, res) => {
             attributes: [
                 'menuItemDetailId',
                 [fn('SUM', col('quantity')), 'totalSold'],
-                [fn('SUM', literal('quantity * "MenuItemDetail"."price"')), 'totalAmount'] // Total amount calculation
+                [fn('SUM', literal('quantity * "MenuItemDetail"."price"')), 'totalAmount'] 
             ],
             include: [{
                 model: Order,
@@ -573,6 +561,112 @@ const getTopSellingItemsByDate = async (req, res) => {
     }
 };
 
+const getTopSellingItemsByDateRange = async (req, res) => {
+    console.log('getTopSellingItemsByDateRange called');
+    console.log('Query:', req.query);
+
+    try {
+        const { page = 1, limit = 10, period = 'today' } = req.query;
+        const parsedPage = parseInt(page) || 1;
+        const parsedLimit = parseInt(limit) || 10;
+        const offset = (parsedPage - 1) * parsedLimit;
+
+        let startDate, endDate;
+
+        switch (period) {
+            case 'today':
+                startDate = moment().startOf('day').toDate();
+                endDate = moment().endOf('day').toDate();
+                break;
+            case 'week':
+                startDate = moment().startOf('week').toDate();
+                endDate = moment().endOf('day').toDate();
+                break;
+            case 'month':
+                startDate = moment().subtract(1, 'month').toDate();
+                endDate = moment().endOf('day').toDate();
+                break;
+            default:
+                startDate = moment().startOf('day').toDate();
+                endDate = moment().endOf('day').toDate();
+        }
+
+        const orders = await Order.findAll({
+            attributes: ['id','orderNumber','totalQuantity','orderDate','subTotal','tax','discount','note'],
+            include: [
+                {
+                    model: Payment,
+                    attributes: ['paymentDate', 'paymentMethod', 'paymentAmount', 'paymentStatus'],
+                },
+                {
+                    model:Table,
+                    as: 'table',
+                    attributes:['id','name'],
+                }
+            ],
+            where:{
+                orderStatus: 'PAID',
+                    progressStatus: 'COMPLETED',
+                    orderDate: {
+                        [Op.between]: [startDate, endDate]
+                    }
+            },
+            limit: parsedLimit,
+            offset: offset,
+            order: [['createdAt', 'DESC']],
+        });
+
+        const totalOrders = await Order.count({
+            where: {
+                orderStatus: 'PAID',
+                progressStatus: 'COMPLETED',
+                orderDate: {
+                    [Op.between]: [startDate, endDate]
+                }
+            }
+        });
+
+        const totals = await OrderDetail.findOne({
+            attributes: [
+                [fn('SUM', col('quantity')), 'totalOrderItems'],
+                [fn('SUM', literal('quantity * price')), 'saleValue']
+            ],
+            include: {
+                model: Order,
+                as: 'items',
+                where: {
+                    orderStatus: 'PAID',
+                    progressStatus: 'COMPLETED',
+                    orderDate: {
+                        [Op.between]: [startDate, endDate]
+                    }
+                },
+                attributes: [] 
+            },
+            raw: true
+        });
+
+        return apiResponse(res, 200, 'Orders retrieved successfully', {
+            orders,
+            totals: {
+                totalOrders,
+                totalOrderItems: parseInt(totals?.totalOrderItems || 0),
+                saleValue: parseFloat(totals?.saleValue || 0).toFixed(2)
+            },
+            pagination: {
+                page: parsedPage,
+                limit: parsedLimit,
+                total: totalOrders,
+                totalPages: Math.ceil(totalOrders / parsedLimit),
+            }
+        });
+    } catch (error) {
+        console.error('Error in getTopSellingItemsByDateRange:', error);
+        return apiResponse(res, 500, 'Error retrieving orders', null);
+    }
+};
+
+
 module.exports = {
     getDashboardStats,
     getDailyMonitorStats,
@@ -580,5 +674,6 @@ module.exports = {
     getCategoriesOrder,
     getTopSellingItems,
     getCategoriesOrderByDate,
-    getTopSellingItemsByDate
+    getTopSellingItemsByDate,
+    getTopSellingItemsByDateRange
 };

@@ -28,6 +28,10 @@ const getTopSellingItemsByDate = async (req, res) => {
     return dashboardService.getTopSellingItemsByDate(req, res);
 }
 
+const getTopSellingItemsByDateRange = async (req, res) => {
+    return dashboardService.getTopSellingItemsByDateRange(req, res);
+}
+
 module.exports = {
     getDashboardStats,
     getDailyMonitorStats,
@@ -35,5 +39,6 @@ module.exports = {
     getCategoriesOrder,
     getTopSellingItems,
     getCategoriesOrderByDate,
-    getTopSellingItemsByDate
+    getTopSellingItemsByDate,
+    getTopSellingItemsByDateRange
 };
