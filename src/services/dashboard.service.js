@@ -566,7 +566,7 @@ const getTopSellingItemsByDateRange = async (req, res) => {
     console.log('Query:', req.query);
 
     try {
-        const { page = 1, limit = 10, period = 'today' } = req.query;
+        const { page = 1, limit = 10, period = 'today', sortOrder='desc', sortField='id' } = req.query;
         const parsedPage = parseInt(page) || 1;
         const parsedLimit = parseInt(limit) || 10;
         const offset = (parsedPage - 1) * parsedLimit;
@@ -613,7 +613,7 @@ const getTopSellingItemsByDateRange = async (req, res) => {
             },
             limit: parsedLimit,
             offset: offset,
-            order: [['createdAt', 'DESC']],
+            order: [[sortField || 'createdAt', sortOrder || 'DESC']],
         });
 
         const totalOrders = await Order.count({
