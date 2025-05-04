@@ -10,6 +10,7 @@ orderRouter.get('/progress-status', orderController.GetProgressOrderStatus);
 orderRouter.post('/update-status/:orderNumber', orderController.UpdateOrderStatus);
 orderRouter.get('/kitchen-status', orderController.GetAllKitchenStatus);
 orderRouter.get('/new-pending-order-notification', orderController.getNewPendingOrderNotification);
+orderRouter.get('/order-history', orderController.getOrderHistoryController);
 
 module.exports = orderRouter;
 

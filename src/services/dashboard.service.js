@@ -592,7 +592,7 @@ const getTopSellingItemsByDateRange = async (req, res) => {
         }
 
         const orders = await Order.findAll({
-            attributes: ['id','orderNumber','totalQuantity','orderDate','subTotal','tax','discount','note'],
+            attributes: ['id','orderNumber','totalQuantity',['totalAmount','total'],'orderDate','subTotal','tax','discount','note'],
             include: [
                 {
                     model: Payment,
@@ -666,7 +666,6 @@ const getTopSellingItemsByDateRange = async (req, res) => {
     }
 };
 
-
 module.exports = {
     getDashboardStats,
     getDailyMonitorStats,
@@ -675,5 +674,5 @@ module.exports = {
     getTopSellingItems,
     getCategoriesOrderByDate,
     getTopSellingItemsByDate,
-    getTopSellingItemsByDateRange
+    getTopSellingItemsByDateRange,
 };

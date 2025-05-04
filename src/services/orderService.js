@@ -4,7 +4,9 @@ const OrderStatusLogs = require('../models/orderStatusLogsModel');
 const OrderItem = require('../models/orderDetailModel');
 const MenuItemDetail = require('../models/menuItemDetailModel');
 const Table = require('../models/tableModel');
+const Payment = require('../models/paymentModel');
 const { Op } = require('sequelize');
+const sequelize = require('../config/db');
 
 const createOrderService = async ({ req, res }) => {
   const data = req.body;
@@ -376,6 +378,137 @@ const getNewPendingOrderNotificationService = async ({req,res}) => {
     return apiResponse(res, 500, 'Internal server error');
   }
 };
+
+const getOrderHistoryService = async (req, res) => {
+  console.log('Fetching order history...');
+  console.log(req.query);
+
+  const {
+    page = 1,
+    limit = 10,
+    sortOrder = 'desc',
+    search = '',
+    start = '',
+    end = '',
+  } = req.query;
+
+  const status = req.query.status;
+  let { sortField = 'orderDate' } = req.query;
+
+  console.log('status ', status);
+
+  const parsedPage = parseInt(page, 10);
+  const parsedLimit = parseInt(limit, 10);
+  const offset = (parsedPage - 1) * parsedLimit;
+
+  const whereClause = {};
+
+  if (start || end) {
+    const dateFilter = {};
+  
+    // If both dates are the same, search within that whole local day
+    if (start && end && start === end) {
+      const dayStart = new Date(start);
+      dayStart.setHours(0, 0, 0, 0);
+      dayStart.setHours(dayStart.getHours() - 7); // Convert to UTC
+  
+      const dayEnd = new Date(end);
+      dayEnd.setHours(23, 59, 59, 999);
+      dayEnd.setHours(dayEnd.getHours() - 7); // Convert to UTC
+  
+      dateFilter[Op.between] = [dayStart, dayEnd];
+    } else {
+      if (start) {
+        const startDate = new Date(start);
+        startDate.setHours(0, 0, 0, 0);
+        startDate.setHours(startDate.getHours() - 7); // Local to UTC
+        dateFilter[Op.gte] = startDate;
+      }
+  
+      if (end) {
+        const endDate = new Date(end);
+        endDate.setHours(23, 59, 59, 999);
+        endDate.setHours(endDate.getHours() - 7); // Local to UTC
+        dateFilter[Op.lte] = endDate;
+      }
+    }
+  
+    whereClause.orderDate = dateFilter;
+  }
+  
+  if (search) {
+    whereClause[Op.or] = [
+      { orderNumber: { [Op.eq]: search } },
+    ];
+    
+  }
+
+  if (sortField === 'time' || !sortField) {
+    sortField = 'orderDate';
+  }
+
+  const statusMap = {
+    Completed: 'COMPLETED',
+    Cancelled: 'CANCELLED',
+    Rejected: 'REJECTED',
+  };
+  
+  if (status && status !== 'All Statuses' && statusMap[status]) {
+    whereClause.progressStatus = statusMap[status];
+  }
+
+  try {
+    const orders = await Order.findAll({
+      attributes: [
+        'id',
+        'orderNumber',
+        'totalQuantity',
+        ['totalAmount','total'],
+        'orderDate',
+        'subTotal',
+        'tax',
+        'discount',
+        'note',
+        'orderStatus',
+        'progressStatus',
+      ],
+      include: [
+        {
+          model: Payment,
+          attributes: ['paymentDate', 'paymentMethod', 'paymentAmount', 'paymentStatus'],
+        },
+        {
+          model: Table,
+          as: 'table',
+          attributes: ['id', 'name'],
+        },
+      ],
+      where: whereClause,
+      limit: parsedLimit,
+      offset,
+      order: [sequelize.literal(`"${sortField}" ${sortOrder}`)],
+    });
+
+    const totalOrders = await Order.count({ where: whereClause });
+
+    // console.log('Total orders:', orders);
+
+    return apiResponse(res, 200, 'Orders History retrieved successfully', {
+      orders,
+      totals: {},
+      pagination: {
+        page: parsedPage,
+        limit: parsedLimit,
+        total: totalOrders,
+        totalPages: Math.ceil(totalOrders / parsedLimit),
+      },
+    });
+  } catch (err) {
+    console.error('Error fetching order history:', err);
+    return apiResponse(res, 500, 'Internal server error');
+  }
+};
+
   
 module.exports = {
   createOrderService,
@@ -384,6 +517,7 @@ module.exports = {
   getProgressOrderStatusService,
   updateOrderStatusService,
   getAllKitchenStatusService,
-  getNewPendingOrderNotificationService
+  getNewPendingOrderNotificationService,
+  getOrderHistoryService
 }
   

@@ -28,6 +28,10 @@ const getNewPendingOrderNotification = async (req, res) => {
     return OrderService.getNewPendingOrderNotificationService({req,res});
 }
 
+const getOrderHistoryController = async (req, res) => {
+    return OrderService.getOrderHistoryService(req,res);
+}
+
 module.exports = {
     CreateOrder,
     CreateCustomerOrder,
@@ -35,5 +39,6 @@ module.exports = {
     GetProgressOrderStatus,
     UpdateOrderStatus,
     GetAllKitchenStatus,
-    getNewPendingOrderNotification
+    getNewPendingOrderNotification,
+    getOrderHistoryController
 };
