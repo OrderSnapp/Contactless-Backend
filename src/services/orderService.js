@@ -7,6 +7,7 @@ const Table = require('../models/tableModel');
 const Payment = require('../models/paymentModel');
 const { Op } = require('sequelize');
 const sequelize = require('../config/db');
+const OrderDetail = require('../models/orderDetailModel');
 
 const createOrderService = async ({ req, res }) => {
   const data = req.body;
@@ -509,6 +510,39 @@ const getOrderHistoryService = async (req, res) => {
   }
 };
 
+const getOrderItemsByOrderId = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Fetch order-level notes (assuming the `note` field is in Order)
+    const order = await Order.findByPk(id);
+
+    const orderItems = await OrderDetail.findAll({
+      attributes: ['quantity', 'total', 'price'],
+      where: { orderId: id },
+      include: [
+        {
+          model: MenuItemDetail,
+          attributes: ['id', 'name']
+        }
+      ]
+    });
+
+    const formattedItems = orderItems.map((item, index) => ({
+      id: item.MenuItemDetail?.id || index + 1,
+      name: item.MenuItemDetail?.name || 'Unknown item',
+      quantity: item.quantity,
+      unitPrice: `$${parseFloat(item.price).toFixed(2)}`,
+      total: `$${parseFloat(item.total).toFixed(2)}`,
+      notes: order?.note || '' 
+    }));
+
+    return apiResponse(res, 200, 'Orders Detail retrieved successfully', formattedItems);
+  } catch (err) {
+    console.error('Error fetching getOrderItemsByOrderId:', err);
+    return apiResponse(res, 500, 'Internal server error');
+  }
+};
   
 module.exports = {
   createOrderService,
@@ -518,6 +552,7 @@ module.exports = {
   updateOrderStatusService,
   getAllKitchenStatusService,
   getNewPendingOrderNotificationService,
-  getOrderHistoryService
+  getOrderHistoryService,
+  getOrderItemsByOrderId
 }
   
