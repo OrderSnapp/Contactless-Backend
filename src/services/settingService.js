@@ -4,6 +4,7 @@ const apiResponse = require('../utils/apiResponse');
 const getSettingService = async ({res}) => {
     try {
         const setting = await Setting.findOne();
+        setting.darkMode = setting.darkMode == '1' ? true : false;
         return apiResponse(res, 200, 'Setting retrieved successfully', setting);
     } catch (error) {
         return apiResponse(res, 500, error.message);
@@ -13,10 +14,7 @@ const getSettingService = async ({res}) => {
 const updateSettingService = async ({req, res}) => {
 
     console.log('Start updateSettingService');
-    
-
     try {
-
         const data = req.body
 
         console.log('request body: ', data);
@@ -31,6 +29,7 @@ const updateSettingService = async ({req, res}) => {
                 shopName: data.shopName,
                 shopLogo: data.shopLogo,
                 font: data.font,
+                darkMode: data.darkMode == true ? '1' : '0'
             }
 
             console.log('Setting not found, creating new setting');
@@ -45,6 +44,7 @@ const updateSettingService = async ({req, res}) => {
         setting.shopName = data.shopName;
         setting.shopLogo = data.shopLogo;
         setting.font = data.font;
+        setting.darkMode = data.darkMode == true ? '1' : '0';
 
         await setting.save();
         return apiResponse(res, 200, 'Setting updated successfully', setting);

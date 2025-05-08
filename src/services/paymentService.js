@@ -132,7 +132,7 @@ const checkTransaction = async({ req, res }) => {
             await Payment.create({
                 orderId: order.id,
                 paymentDate: new Date(),
-                paymentMethod: 'ONLINE',
+                paymentMethod: 'KHQR',
                 paymentAmount: data.data.amount,
                 paymentStatus: 'SUCCESS',
                 receiveAmount:  data.data.amount,

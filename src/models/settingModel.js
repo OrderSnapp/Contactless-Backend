@@ -29,6 +29,10 @@ const Setting = sequelize.define('Setting', {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    darkMode:{
+        type:DataTypes.STRING,
+        allowNull: true,
+    },
     ...timestamp,
 });
 

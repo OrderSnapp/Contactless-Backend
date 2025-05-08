@@ -13,6 +13,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      darkMode:{
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       shopName:{
         type: Sequelize.STRING,
         allowNull: false,
