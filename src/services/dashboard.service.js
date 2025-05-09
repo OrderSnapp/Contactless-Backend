@@ -27,6 +27,9 @@ const getDashboardStats = async ({req, res}) => {
                 orderDate: {
                     [Op.between]: [yesterday, endOfToday]
                 },
+                tableId: {
+                    [Op.not]: null
+                },
                 orderStatus: 'PAID',
                 progressStatus: 'COMPLETED'
             },
@@ -157,6 +160,9 @@ const getDailyMonitorStats = async ({req, res}) => {
             where: {
                 orderDate: {
                     [Op.between]: [today, endOfToday]
+                },
+                tableId: {
+                    [Op.not]: null
                 }
             },
             group: ['status_category'],
@@ -218,7 +224,10 @@ const getWeeklyOrders = async ({req, res}) => {
                     [Op.between]: [startOfWeek, endOfWeek]
                 },
                 orderStatus: 'PAID',
-                progressStatus: 'COMPLETED'
+                progressStatus: 'COMPLETED',
+                tableId: {
+                    [Op.not]: null
+                }
             },
             group: [fn('DATE', col('orderDate'))],
             order: [[col('date'), 'ASC']],
@@ -272,6 +281,9 @@ const getCategoriesOrder = async ({ req, res }) => {
                 orderDate: {
                     [Op.between]: [startOfToday, endOfToday],
                 },
+                tableId: {
+                    [Op.not]: null
+                }
             },
             attributes: ['id'],
         });
@@ -359,6 +371,9 @@ const getTopSellingItems = async ({ req, res }) => {
                     progressStatus: 'COMPLETED',
                     orderDate: {
                         [Op.between]: [startOfToday, endOfToday] // Filter for today's orders
+                    },
+                    tableId: {
+                        [Op.not]: null
                     }
                 },
                 required: true
@@ -423,6 +438,9 @@ const getCategoriesOrderByDate = async (req, res ) => {
                 orderDate: {
                     [Op.between]: [startDate, endDate],
                 },
+                tableId: {
+                    [Op.not]: null
+                }
             },
             attributes: ['id'],
         });
@@ -531,6 +549,9 @@ const getTopSellingItemsByDate = async (req, res) => {
                     progressStatus: 'COMPLETED',
                     orderDate: {
                         [Op.between]: [startDate, endDate]
+                    },
+                    tableId: {
+                        [Op.not]: null
                     }
                 },
                 required: true
