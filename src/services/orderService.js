@@ -403,6 +403,7 @@ const getOrderHistoryService = async (req, res) => {
   const offset = (parsedPage - 1) * parsedLimit;
 
   const whereClause = {};
+  whereClause.tableId = { [Op.not]: null };
 
   if (start || end) {
     const dateFilter = {};
