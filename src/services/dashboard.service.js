@@ -606,10 +606,13 @@ const getTopSellingItemsByDateRange = async (req, res) => {
             ],
             where:{
                 orderStatus: 'PAID',
-                    progressStatus: 'COMPLETED',
-                    orderDate: {
-                        [Op.between]: [startDate, endDate]
-                    }
+                progressStatus: 'COMPLETED',
+                orderDate: {
+                    [Op.between]: [startDate, endDate]
+                },
+                tableId: {
+                    [Op.not]: null
+                }
             },
             limit: parsedLimit,
             offset: offset,
