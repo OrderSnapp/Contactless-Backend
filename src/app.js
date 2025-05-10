@@ -9,12 +9,26 @@ require('dotenv').config();
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
+// app.use(cors({
+//   // origin: 'http://localhost:3000',
+//   origin: ['http://localhost:3000', 'https://prod.sunchengchhay.me'],
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//   credentials: true,
+// }));
 app.use(cors({
-  // origin: 'http://localhost:3000',
-  origin: ['http://localhost:3000', 'https://prod.sunchengchhay.me'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: function (origin, callback) {
+    const allowed = ['http://localhost:3000', 'https://prod.sunchengchhay.me'];
+    if (!origin || allowed.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }));
+
 
 app.use(express.json());
 app.use(
