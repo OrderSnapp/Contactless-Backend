@@ -315,7 +315,8 @@ const getAllKitchenStatusService = async ({ req, res }) => {
       const plainOrder = order.get({ plain: true });
       
       const orderDate = new Date(plainOrder.createdAt);
-      const formattedTime = `${orderDate.getHours()}:${String(orderDate.getMinutes()).padStart(2, '0')}`;
+      const localDate = new Date(orderDate.getTime() + (7 * 60 * 60 * 1000)); 
+      const formattedTime = `${localDate.getHours()}:${String(localDate.getMinutes()).padStart(2, '0')}`;
       
       const status = statusMapping[plainOrder.progressStatus];
       
@@ -364,12 +365,15 @@ const getNewPendingOrderNotificationService = async ({req,res}) => {
 
     const formattedPendingOrders = pendingOrders.map(order => {
       const plainOrder = order.get({ plain: true });
+      const orderDate = new Date(plainOrder.orderTime);
+      const localDate = new Date(orderDate.getTime() + (7 * 60 * 60 * 1000));
+      const formattedTime = `${localDate.getHours()}:${String(localDate.getMinutes()).padStart(2, '0')}`;
       
       return {
         id: plainOrder.id,
         orderNumber: plainOrder.orderNumber,
         tableNumber: plainOrder.table.number,
-        orderTime: plainOrder.orderTime,
+        orderTime: formattedTime,
       };
     });
 
