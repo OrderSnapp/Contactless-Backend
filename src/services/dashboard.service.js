@@ -646,6 +646,9 @@ const getTopSellingItemsByDateRange = async (req, res) => {
                 progressStatus: 'COMPLETED',
                 orderDate: {
                     [Op.between]: [startDate, endDate]
+                },
+                tableId: {
+                    [Op.not]: null
                 }
             }
         });
@@ -663,6 +666,9 @@ const getTopSellingItemsByDateRange = async (req, res) => {
                     progressStatus: 'COMPLETED',
                     orderDate: {
                         [Op.between]: [startDate, endDate]
+                    },
+                    tableId: {
+                        [Op.not]: null
                     }
                 },
                 attributes: [] 
