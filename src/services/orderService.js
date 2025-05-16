@@ -361,7 +361,7 @@ const getNewPendingOrderNotificationService = async ({req,res}) => {
           attributes: ['id', 'number'],
         },
       ],
-    });
+    }); 
 
     const formattedPendingOrders = pendingOrders.map(order => {
       const plainOrder = order.get({ plain: true });
