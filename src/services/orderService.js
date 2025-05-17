@@ -63,57 +63,62 @@ const createCustomerOrderService = async ({ req, res }) => {
   const data = req.body;
   const items = data.items;
 
-  const table = await Table.findOne({
-    where:{
-      id: data.table.tableNumber,
+  try{
+    const table = await Table.findOne({
+      where:{
+        id: data.table.tableNumber,
+      }
+    })
+  
+    if(table){
+      return apiResponse(res, 400, 'Table already exists',null);
     }
-  })
-
-  if(table){
-    return apiResponse(res, 400, 'Table already exists',null);
-  }
-
-  console.log(data.table.tableNumber);
-
- const order = {
-    tableId: data.table.tableNumber,
-    orderNumber: data.orderNumber,
-    batchNumber: data.batchNumber,
-    subTotal: data.subtotal,
-    totalQuantity: data.total_quantity,
-    tax: data.tax,
-    discount: data.discount,
-    note: data.note,
-    orderDate: Date.now(),
-    orderStatus: 'UNPAID',
-    totalAmount: data.total,
-    progressStatus: 'PENDING',
-  };
-
-  const orderData = await Order.create(order);
-
-  items.forEach(async (item) => {
-    await OrderItem.create({
-      orderId: orderData.id,
-      menuItemDetailId: item.id,
-      quantity: item.quantity,
-      price: item.price,
-      total: item.total
+  
+    console.log(data.table.tableNumber);
+  
+   const order = {
+      tableId: data.table.tableNumber,
+      orderNumber: data.orderNumber,
+      batchNumber: data.batchNumber,
+      subTotal: data.subtotal,
+      totalQuantity: data.total_quantity,
+      tax: data.tax,
+      discount: data.discount,
+      note: data.note,
+      orderDate: Date.now(),
+      orderStatus: 'UNPAID',
+      totalAmount: data.total,
+      progressStatus: 'PENDING',
+    };
+  
+    const orderData = await Order.create(order);
+  
+    items.forEach(async (item) => {
+      await OrderItem.create({
+        orderId: orderData.id,
+        menuItemDetailId: item.id,
+        quantity: item.quantity,
+        price: item.price,
+        total: item.total
+      });
     });
-  });
-
-  const orderStatusLogs = {
-    orderId: orderData.id,
-    status: 'PENDING',
-    createdBy: 1,
-    updatedBy: 1,
-    updatedAt: Date.now(),
-    createdAt: Date.now(),
-  };
-
-  await OrderStatusLogs.create(orderStatusLogs);
-
-  return apiResponse(res, 201, 'Review created successfully', data.orderNumber);
+  
+    const orderStatusLogs = {
+      orderId: orderData.id,
+      status: 'PENDING',
+      createdBy: 1,
+      updatedBy: 1,
+      updatedAt: Date.now(),
+      createdAt: Date.now(),
+    };
+  
+    await OrderStatusLogs.create(orderStatusLogs);
+  
+    return apiResponse(res, 201, 'Review created successfully', data.orderNumber);
+  }catch(err){
+    console.error('Error creating customer order:', err);
+    return apiResponse(res, 500, 'Internal server error');
+  }
 };
 
 const getAllOrdersByStatusService = async ({ req, res }) => {
