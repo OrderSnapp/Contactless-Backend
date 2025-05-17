@@ -161,7 +161,7 @@ const getAllOrdersByStatusService = async ({ req, res }) => {
           include: [
             {
               model: MenuItemDetail,
-              attributes: ['name'],
+              attributes: ['name','imageUrl'],
             },
           ],
         },
@@ -185,6 +185,7 @@ const getAllOrdersByStatusService = async ({ req, res }) => {
         price: item.price,
         total: item.totalAmount,
         name: item.MenuItemDetail?.name,
+        imageUrl: item.MenuItemDetail?.imageUrl,
       }));
       
       return {
