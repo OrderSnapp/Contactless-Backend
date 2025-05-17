@@ -93,7 +93,7 @@ const createTableFromLayoutService = async ({ res, tables }) => {
 
             if (existingTable) {
                 newTables.push(table);
-                existingTable.name = table.number;
+                existingTable.name = table.tableNumber.toString();
                 existingTable.number = table.tableNumber;
                 existingTable.shape = table.shape;
                 existingTable.size = `${table.size.width}/${table.size.height}`;
@@ -106,7 +106,7 @@ const createTableFromLayoutService = async ({ res, tables }) => {
                 
             } else {
                 const newTable = await Table.create({
-                    name: table.number.toString(),
+                    name: table.tableNumber.toString(),
                     number: table.tableNumber,
                     shape: table.shape,
                     size: `${table.size.width}/${table.size.height}`,
