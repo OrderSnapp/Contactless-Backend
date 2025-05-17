@@ -29,7 +29,8 @@ const updateSettingService = async ({req, res}) => {
                 shopName: data.shopName,
                 shopLogo: data.shopLogo,
                 font: data.font,
-                darkMode: data.darkMode == true ? '1' : '0'
+                darkMode: data.darkMode == true ? '1' : '0',
+                fontFamily: data.fontFamily,
             }
 
             console.log('Setting not found, creating new setting');
@@ -44,6 +45,7 @@ const updateSettingService = async ({req, res}) => {
         setting.shopName = data.shopName;
         setting.shopLogo = data.shopLogo;
         setting.font = data.font;
+        setting.fontFamily = data.fontFamily;
         setting.darkMode = data.darkMode == true ? '1' : '0';
 
         await setting.save();

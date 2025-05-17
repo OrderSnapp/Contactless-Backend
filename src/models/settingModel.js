@@ -33,6 +33,10 @@ const Setting = sequelize.define('Setting', {
         type:DataTypes.STRING,
         allowNull: true,
     },
+    fontFamily:{
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     ...timestamp,
 });
 
