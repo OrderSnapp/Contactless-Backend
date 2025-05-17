@@ -63,6 +63,16 @@ const createCustomerOrderService = async ({ req, res }) => {
   const data = req.body;
   const items = data.items;
 
+  const table = await Table.findOne({
+    where:{
+      id: data.table.tableNumber,
+    }
+  })
+
+  if(table){
+    return apiResponse(res, 400, 'Table already exists',null);
+  }
+
   console.log(data.table.tableNumber);
 
  const order = {
