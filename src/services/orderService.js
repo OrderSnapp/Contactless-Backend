@@ -16,14 +16,15 @@ const createOrderService = async ({ req, res }) => {
 
   try{
 
-    const table = await Table.findOne({
+    const table = await Order.findOne({
       where:{
-        id: data.table.id
+        tableId: data.table.id,
+        orderStatus: 'UNPAID',
       }
-    })
-  
+    });
+
     if(table){
-      return apiResponse(res, 400, 'Table already exists',null);
+      return apiResponse(res, 400, 'Table already have order',null);
     }
     
     const order = {
@@ -75,14 +76,16 @@ const createCustomerOrderService = async ({ req, res }) => {
   const items = data.items;
 
   try{
-    const table = await Table.findOne({
+    
+    const table = await Order.findOne({
       where:{
-        id: data.table.tableNumber,
+        tableId: data.table.id,
+        orderStatus: 'UNPAID',
       }
-    })
-  
+    });
+
     if(table){
-      return apiResponse(res, 400, 'Table already exists',null);
+      return apiResponse(res, 400, 'Table already have order',null);
     }
   
     console.log(data.table.tableNumber);
