@@ -15,6 +15,17 @@ const createOrderService = async ({ req, res }) => {
   const currentDate = new Date();
 
   try{
+
+    const table = await Table.findOne({
+      where:{
+        id: data.table.id
+      }
+    })
+  
+    if(table){
+      return apiResponse(res, 400, 'Table already exists',null);
+    }
+    
     const order = {
       tableId: data.table.id,
       orderNumber: data.orderNumber,

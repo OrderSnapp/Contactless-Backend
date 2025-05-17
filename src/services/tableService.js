@@ -94,7 +94,7 @@ const createTableFromLayoutService = async ({ res, tables }) => {
             if (existingTable) {
                 newTables.push(table);
                 existingTable.name = table.number;
-                existingTable.number = table.number;
+                existingTable.number = table.tableNumber;
                 existingTable.shape = table.shape;
                 existingTable.size = `${table.size.width}/${table.size.height}`;
                 existingTable.capacity = table.capacity;
@@ -107,7 +107,7 @@ const createTableFromLayoutService = async ({ res, tables }) => {
             } else {
                 const newTable = await Table.create({
                     name: table.number.toString(),
-                    number: table.number,
+                    number: table.tableNumber,
                     shape: table.shape,
                     size: `${table.size.width}/${table.size.height}`,
                     capacity: table.capacity,
@@ -144,7 +144,7 @@ const createTableFromLayoutService = async ({ res, tables }) => {
 const getTablesLayoutService = async ({res}) => {
     try {
         const tables = await Table.findAll({
-            attributes: ['id','qrImage','name', 'number', 'shape', 'size', 'capacity', 'position']
+            attributes: ['id','qrImage','name', ['number','tableNumber'], 'shape', 'size', 'capacity', 'position']
         });
 
         const transformedTables = tables.map(table => {
