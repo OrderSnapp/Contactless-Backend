@@ -16,10 +16,14 @@ const createOrderService = async ({ req, res }) => {
 
   try{
 
+    const { Op } = require('sequelize');
+
     const table = await Order.findOne({
-      where:{
+      where: {
         tableId: data.table.id,
-        orderStatus: 'UNPAID',
+        progressStatus: {
+          [Op.notIn]: ['COMPLETED', 'PENDING']
+        }
       }
     });
 
@@ -76,11 +80,13 @@ const createCustomerOrderService = async ({ req, res }) => {
   const items = data.items;
 
   try{
-    
+
     const table = await Order.findOne({
-      where:{
+      where: {
         tableId: data.table.id,
-        orderStatus: 'UNPAID',
+        progressStatus: {
+          [Op.notIn]: ['COMPLETED', 'PENDING']
+        }
       }
     });
 
