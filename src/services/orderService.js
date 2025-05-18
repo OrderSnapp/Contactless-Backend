@@ -94,10 +94,10 @@ const createCustomerOrderService = async ({ req, res }) => {
       return apiResponse(res, 400, 'Table already have order',null);
     }
   
-    console.log(data.table.tableNumber);
+    console.log(data.table.tableId);
   
    const order = {
-      tableId: data.table.tableNumber,
+      tableId: data.table.tableId,
       orderNumber: data.orderNumber,
       batchNumber: data.batchNumber,
       subTotal: data.subtotal,
