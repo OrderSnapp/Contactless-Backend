@@ -129,19 +129,14 @@ const createTableFromLayoutService = async ({ res, tables }) => {
 
                 newTables.push({
                     ...newTable.toJSON(),
+                    tableNumber: newTable.number,
                     size: { width, height },
                     position: { x, y }
                 });
             }
         }
 
-        const newTransformTable = newTables.map(table => ({
-            ...table,
-            tableNumber: table.number,
-            number: undefined
-        }));
-
-        return apiResponse(res, 201, 'Tables created or updated successfully', newTransformTable);
+        return apiResponse(res, 201, 'Tables created or updated successfully', newTables);
     } catch (error) {
         console.log(`Error: ${error.message}`);
         return apiResponse(res, 500, error.message);
