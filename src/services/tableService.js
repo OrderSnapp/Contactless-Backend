@@ -262,7 +262,8 @@ const getTableOrderByTableId = async ({ req, res }) => {
             id:orderWithDetails.id,
             table:{
                 id: orderWithDetails.table.id,
-                name: orderWithDetails.table.name
+                name: orderWithDetails.table.name,
+                tableNumber: orderWithDetails.table.tableNumber,
             },
             items: orderWithDetails.items.map(item => ({
                 id: item.MenuItemDetail.id,
