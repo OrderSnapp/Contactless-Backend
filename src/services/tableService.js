@@ -233,7 +233,7 @@ const getTableOrderByTableId = async ({ req, res }) => {
                 {
                     model: Table,
                     as: 'table',
-                    attributes: ['id','name']
+                    attributes: ['id','number','name'],
                 },
                 {
                     model: OrderItemDetail,
