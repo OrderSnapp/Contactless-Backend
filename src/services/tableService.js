@@ -255,7 +255,7 @@ const getTableOrderByTableId = async ({ req, res }) => {
         });
 
         if (!orderWithDetails) {
-            return apiResponse(res, 404, 'Table not found');
+            return apiResponse(res, 404, 'Table No Order Found');
         }
 
         const tableOrder = {
