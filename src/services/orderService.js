@@ -444,33 +444,35 @@ const getOrderHistoryService = async (req, res) => {
 
   const whereClause = {};
   whereClause.tableId = { [Op.not]: null };
+  whereClause.progressStatus = {
+    [Op.notIn]: ['ACCEPTED', 'COOKING', 'COOKED']
+  };
 
   if (start || end) {
     const dateFilter = {};
   
-    // If both dates are the same, search within that whole local day
     if (start && end && start === end) {
       const dayStart = new Date(start);
       dayStart.setHours(0, 0, 0, 0);
-      dayStart.setHours(dayStart.getHours() - 7); // Convert to UTC
+      dayStart.setHours(dayStart.getHours() - 7);
   
       const dayEnd = new Date(end);
       dayEnd.setHours(23, 59, 59, 999);
-      dayEnd.setHours(dayEnd.getHours() - 7); // Convert to UTC
+      dayEnd.setHours(dayEnd.getHours() - 7);
   
       dateFilter[Op.between] = [dayStart, dayEnd];
     } else {
       if (start) {
         const startDate = new Date(start);
         startDate.setHours(0, 0, 0, 0);
-        startDate.setHours(startDate.getHours() - 7); // Local to UTC
+        startDate.setHours(startDate.getHours() - 7); 
         dateFilter[Op.gte] = startDate;
       }
   
       if (end) {
         const endDate = new Date(end);
         endDate.setHours(23, 59, 59, 999);
-        endDate.setHours(endDate.getHours() - 7); // Local to UTC
+        endDate.setHours(endDate.getHours() - 7);
         dateFilter[Op.lte] = endDate;
       }
     }
