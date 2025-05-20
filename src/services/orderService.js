@@ -161,7 +161,7 @@ const getAllOrdersByStatusService = async ({ req, res }) => {
 
   try{
     const orders = await Order.findAll({
-      attributes: ['id', 'orderNumber', ['totalAmount','total'], ['orderDate', 'orderTime'], 'progressStatus'],
+      attributes: ['id', 'orderNumber', ['totalAmount','total'], ['orderDate', 'orderTime'],['subTotal','subtotal'],'progressStatus'],
       include: [
         {
           model: OrderItem,
