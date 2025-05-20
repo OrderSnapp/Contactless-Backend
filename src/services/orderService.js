@@ -22,7 +22,7 @@ const createOrderService = async ({ req, res }) => {
       where: {
         tableId: data.table.id,
         progressStatus: {
-          [Op.notIn]: ['COMPLETED', 'PENDING']
+          [Op.notIn]: ['COMPLETED', 'PENDING','REJECTED']
         }
       }
     });
@@ -85,7 +85,7 @@ const createCustomerOrderService = async ({ req, res }) => {
       where: {
         tableId: data.table.id,
         progressStatus: {
-          [Op.notIn]: ['COMPLETED', 'PENDING']
+          [Op.notIn]: ['COMPLETED', 'PENDING','REJECTED']
         }
       }
     });
