@@ -97,7 +97,7 @@ const createCustomerOrderService = async ({ req, res }) => {
     console.log(data.table.tableId);
   
    const order = {
-      tableId: data.table.tableId,
+      tableId: data.table.id,
       orderNumber: data.orderNumber,
       batchNumber: data.batchNumber,
       subTotal: data.subtotal,
