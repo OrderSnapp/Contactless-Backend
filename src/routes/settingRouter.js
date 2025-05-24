@@ -2,9 +2,9 @@ const express =  require('express');
 const settingRouter = express.Router();
 
 const settingController = require('../controllers/settingController');
-const { authRoleMiddleware, authMiddleware } = require('../middlewares/authMiddleware');
+const { authRoleMiddleware } = require('../middlewares/authMiddleware');
 
-settingRouter.get('', authMiddleware, settingController.getSetting);
+settingRouter.get('', settingController.getSetting);
 settingRouter.put('', authRoleMiddleware(['Admin']), settingController.updateSetting);
 
 module.exports = settingRouter;
