@@ -50,9 +50,8 @@ const authRoleMiddleware = (roles=[])=>{
           const decoded = jwt.verify(token, process.env.JWT_SECRET);
           req.user = decoded;
 
-          // Check if the user has any of the required roles
           if (roles.length && !decoded.roles.some(role => roles.includes(role))) {
-            return apiResponse(res, 401, 'Token Unauthorized');
+            return apiResponse(res, 401, 'Unauthorized');
         }
 
           next();
