@@ -41,7 +41,7 @@ const registerService = async ({res, username, email, password, phone, firstname
     }
 };
 
-const loginService = async ({ req,res, username, password }) => {
+const loginService = async ({ req, res, username, password }) => {
     try {
         const user = await User.findOne({ where: { username } });
 
@@ -65,8 +65,10 @@ const loginService = async ({ req,res, username, password }) => {
         });
 
         const roles = userWithRoles.Roles.map(role => role.name);
-
         const token = generateAuthToken({ id: user.id, username: user.username, roles: roles });
+        user.lastLogin = new Date();
+        await user.save();
+        console.log(`User ${username} logged in successfully`);
 
         return apiResponse(res, 200, 'Login successful', { token , user: username });
     } catch (error) {

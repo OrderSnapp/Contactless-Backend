@@ -467,40 +467,54 @@ const getCategoriesOrderByDate = async (req, res ) => {
             raw: true,
         });
 
-        const menuItemIdMap = items.reduce((acc, item) => {
-            acc[item.id] = item.menuItemId;
-            return acc;
-        }, {});
-
-        const menuItemIds = items.map(item => item.menuItemId);
         const categories = await MenuItem.findAll({
             where: {
-                id: menuItemIds,
+                id: items.map(item => item.menuItemId),
             },
             attributes: ['id', 'name'],
             raw: true,
         });
 
-        const categoryQuantities = orderDetails.reduce((acc, detail) => {
-            const menuItemId = menuItemIdMap[detail.menuItemDetailId];
-            const category = categories.find(cat => cat.id === menuItemId);
-            if (category) {
-                const categoryId = category.categoryId;
-                if (!acc[categoryId]) {
-                    acc[categoryId] = {
-                        categoryId,
-                        name: category.name,
-                        amount: 0,
-                    };
-                }
-                acc[categoryId].amount += parseInt(detail.amount, 10);
+        console.log('Categories:', categories);
+        
+        const menuItemMap = items.reduce((map, item) => {
+            map[item.id] = item.menuItemId;
+            return map;
+          }, {});
+      
+          const enrichedOrderDetails = orderDetails.map(detail => ({
+            ...detail,
+            menuItemId: menuItemMap[detail.menuItemDetailId] || null,
+          }));
+      
+          const groupedByMenuItemId = enrichedOrderDetails.reduce((acc, detail) => {
+            const { menuItemId, amount } = detail;
+            if (!acc[menuItemId]) {
+              acc[menuItemId] = {
+                menuItemId,
+                amount: Number(amount),
+              };
+            } else {
+              acc[menuItemId].amount += Number(amount);
             }
             return acc;
-        }, {});
+          }, {});
 
-        const finalCategories = Object.values(categoryQuantities);
+          const finalResult = Object.values(groupedByMenuItemId);
 
-        return apiResponse(res, 200, 'Categories order retrieved successfully', finalCategories);
+          const categoryMap = categories.reduce((map, cat) => {
+            map[cat.id] = cat.name;
+            return map;
+          }, {});
+          
+          const finalOutput = finalResult.map(item => ({
+            name: categoryMap[item.menuItemId] || 'Unknown',
+            amount: item.amount
+          }));
+          
+          console.log('Final Output:', finalOutput);
+
+        return apiResponse(res, 200, 'Categories order retrieved successfully', finalOutput);
     } catch (err) {
         console.error(err);
         return apiResponse(res, 500, 'Internal server error');
