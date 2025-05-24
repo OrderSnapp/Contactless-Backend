@@ -161,7 +161,7 @@ const getAllOrdersByStatusService = async ({ req, res }) => {
 
   try{
     const orders = await Order.findAll({
-      attributes: ['id', 'orderNumber','tax',['totalAmount','total'], ['orderDate', 'orderTime'],['subTotal','subtotal'],'progressStatus'],
+      attributes: ['id', 'orderNumber','note','tax',['totalAmount','total'], ['orderDate', 'orderTime'],['subTotal','subtotal'],'progressStatus'],
       include: [
         {
           model: OrderItem,
@@ -202,7 +202,9 @@ const getAllOrdersByStatusService = async ({ req, res }) => {
         items: transformedItems,
       };
     });
-  
+
+    console.log('Transformed orders:', transformedOrders);
+    
     return apiResponse(res, 200, `${status} orders retrieved successfully`, transformedOrders);
   }
   catch(err){
@@ -309,7 +311,7 @@ const updateOrderStatusService = async ({ req, res }) => {
 const getAllKitchenStatusService = async ({ req, res }) => {
   try {
     const orders = await Order.findAll({
-      attributes: ['id','orderNumber','createdAt', 'progressStatus'],
+      attributes: ['id','orderNumber','createdAt', 'progressStatus','note'],
       include: [
         {
           model: OrderItem,
@@ -359,6 +361,7 @@ const getAllKitchenStatusService = async ({ req, res }) => {
       const formattedOrder = {
         id: plainOrder.id,
         orderNumber: plainOrder.orderNumber,
+        note: plainOrder.note,
         table: {
           id: plainOrder.table.id,
           number: plainOrder.table.number
@@ -368,7 +371,8 @@ const getAllKitchenStatusService = async ({ req, res }) => {
           quantity: item.quantity
         })),
         time: formattedTime,
-        priority: 'normal'
+        priority: 'normal',
+        orderDate: localDate
       };
       
       result[status].push(formattedOrder);
@@ -557,7 +561,6 @@ const getOrderItemsByOrderId = async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Fetch order-level notes (assuming the `note` field is in Order)
     const order = await Order.findByPk(id);
 
     const orderItems = await OrderDetail.findAll({

@@ -169,7 +169,11 @@ const getTablesLayoutService = async ({res}) => {
 const getTableService = async ({res, id}) =>{
     try{
         const table = await Table.findByPk(id);
-        return apiResponse(res, 200, 'Tables retrieved successfully', table);
+        const formatTableData = {
+            ...table.toJSON(),
+            tableNumber: table.number,
+        }
+        return apiResponse(res, 200, 'Tables retrieved successfully', formatTableData);
     } catch (error) {
         return apiResponse(res, 500, error.message);
     }

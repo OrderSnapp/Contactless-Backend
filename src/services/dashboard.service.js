@@ -289,6 +289,7 @@ const getCategoriesOrder = async ({ req, res }) => {
         });
 
         const orderIds = orders.map(order => order.id);
+        console.log(orderIds);
 
         const orderDetails = await OrderDetail.findAll({
             where: {
@@ -360,7 +361,7 @@ const getTopSellingItems = async ({ req, res }) => {
             attributes: [
                 'menuItemDetailId',
                 [fn('SUM', col('quantity')), 'totalSold'],
-                [fn('SUM', literal('quantity * "MenuItemDetail"."price"')), 'totalAmount'] // Total amount calculation
+                [fn('SUM', literal('quantity * "MenuItemDetail"."price"')), 'totalAmount'] 
             ],
             include: [{
                 model: Order,
@@ -370,7 +371,7 @@ const getTopSellingItems = async ({ req, res }) => {
                     orderStatus: 'PAID',
                     progressStatus: 'COMPLETED',
                     orderDate: {
-                        [Op.between]: [startOfToday, endOfToday] // Filter for today's orders
+                        [Op.between]: [startOfToday, endOfToday]
                     },
                     tableId: {
                         [Op.not]: null
