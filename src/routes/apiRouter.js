@@ -5,8 +5,8 @@ const router = express.Router();
 const { authRoleMiddleware } = require('../middlewares/authMiddleware');
 
 // Use the route modules
-router.use('/auth', require('./authRouter'));
-router.use('/users', authRoleMiddleware(['Admin']) ,require('./userRouter'));
+router.use('/auth',require('./authRouter'));
+router.use('/users',authRoleMiddleware(['Admin']),require('./userRouter'));
 router.use('/tables',require('./tableRouter'));
 router.use('/ingredients', require('./ingredientRouter'));
 router.use('/menus', require('./menuRouter'));

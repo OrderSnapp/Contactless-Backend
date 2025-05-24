@@ -512,8 +512,6 @@ const getCategoriesOrderByDate = async (req, res ) => {
             amount: item.amount
           }));
           
-          console.log('Final Output:', finalOutput);
-
         return apiResponse(res, 200, 'Categories order retrieved successfully', finalOutput);
     } catch (err) {
         console.error(err);
