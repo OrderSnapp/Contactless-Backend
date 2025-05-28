@@ -60,6 +60,7 @@ const createPayment = async ({ req, res }) => {
 
 const generateKhqr = async ({ req, res }) => {
     const data = req.body;
+    console.log(`Generating KHQR for orderNumber = ${data.orderNumber}`, data);
 
     const response = KHQR.generate({
         tag: TAG.INDIVIDUAL,
@@ -77,6 +78,8 @@ const generateKhqr = async ({ req, res }) => {
             purposeOfTransaction: "Payment"
         }
     })
+
+    console.log('KHQR response:', response);
 
     return apiResponse(res, 200, 'QR code generated successfully', {
         qr: response.data.qr,
@@ -159,8 +162,6 @@ const checkTransaction = async({ req, res }) => {
         return apiResponse(res, 500, 'Internal Server Error');
     }
 };
-
-
 
 module.exports = {
     createPayment,
