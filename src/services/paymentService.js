@@ -147,7 +147,7 @@ const checkTransaction = async({ req, res }) => {
                 orderId: order.id,
                 paymentDate: new Date(),
                 paymentMethod: 'KHQR',
-                paymentAmount: data.data.amount,
+                paymentAmount: order.totalAmount,
                 paymentStatus: 'SUCCESS',
                 receiveAmount:  data.data.amount,
                 changeAmount: 0,
@@ -155,7 +155,7 @@ const checkTransaction = async({ req, res }) => {
             console.log('Payment created successfully');
 
             const message = `🔔 *New Transaction Alert!*\n` +
-                    `💵 *Received Amount:* $${data.data.amount}\n` +
+                    `💵 *Received Amount:* $${order.totalAmount}\n` +
                     `💳 *Payment Method:* KHQR\n` +
                     `📄 *Order Number:* ${orderNumber}\n` +
                     `💸 *Change Due:* $0\n` +
