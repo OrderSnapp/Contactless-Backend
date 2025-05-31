@@ -50,21 +50,15 @@ const createPayment = async ({ req, res }) => {
 
         await t.commit();
 
-        (async () => {
-            const message = `🔔 *New Transaction Alert!*\n` +
+        const message = `🔔 *New Transaction Alert!*\n` +
                 `💰 *Amount:* $${data.totalOrderAmount}\n` +
                 `📄 *Order Number:* ${order.orderNumber}\n` +
                 `💳 *Payment Method:* ${data.paymentType}\n` +
                 `💵 *Received Amount:* $${data.receivedAmount}\n` +
                 `💸 *Change Due:* $${data.changeDue}\n` +
                 `📅 *Date:* ${new Date().toLocaleString()}\n`;
-        
-            try {
-                await sendAlertTelegram(message);
-            } catch (alertErr) {
-                console.warn('Telegram alert failed:', alertErr);
-            }
-        })();
+
+        sendAlertTelegram(message).catch(err => console.warn('Telegram send failed:', err));
 
         return apiResponse(res, 200, 'Payment created successfully');
 
@@ -160,18 +154,14 @@ const checkTransaction = async({ req, res }) => {
             });
             console.log('Payment created successfully');
 
-            try{
-                const message = `🔔 *New Transaction Alert!*\n` +
+            const message = `🔔 *New Transaction Alert!*\n` +
                     `💵 *Received Amount:* $${data.data.amount}\n` +
                     `💳 *Payment Method:* KHQR\n` +
                     `📄 *Order Number:* ${orderNumber}\n` +
                     `💸 *Change Due:* $0\n` +
                     `📅 *Date:* ${new Date().toLocaleString()}\n`;
 
-                await sendAlertTelegram(message);
-            }catch(err){
-                console.log('Telegram alert failed:', err);
-            }
+            sendAlertTelegram(message).catch(err => console.warn('Telegram send failed:', err));
 
             return apiResponse(res, 200, 'Transaction found',1);
         }
