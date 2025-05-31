@@ -56,7 +56,7 @@ const createPayment = async ({ req, res }) => {
                 `💳 *Payment Method:* ${data.paymentType}\n` +
                 `💵 *Received Amount:* $${data.receivedAmount}\n` +
                 `💸 *Change Due:* $${data.changeDue}\n` +
-                `📅 *Date:* ${new Date().toLocaleString()}\n`;
+                `📅 *Date:* ${new Date().toLocaleString('en-KH', { timeZone: 'Asia/Phnom_Penh' })}\n`;
 
         sendAlertTelegram(message).catch(err => console.warn('Telegram send failed:', err));
 
@@ -159,7 +159,7 @@ const checkTransaction = async({ req, res }) => {
                     `💳 *Payment Method:* KHQR\n` +
                     `📄 *Order Number:* ${orderNumber}\n` +
                     `💸 *Change Due:* $0\n` +
-                    `📅 *Date:* ${new Date().toLocaleString()}\n`;
+                    `📅 *Date:* ${new Date().toLocaleString('en-KH', { timeZone: 'Asia/Phnom_Penh' })}\n`;
 
             sendAlertTelegram(message).catch(err => console.warn('Telegram send failed:', err));
 
