@@ -16,8 +16,10 @@ const updateSettingService = async ({req, res}) => {
     console.log('Start updateSettingService');
     try {
         const data = req.body
+        const shopLogo = req.file;
 
         console.log('request body: ', data);
+        console.log('uploaded file: ', shopLogo);
 
         let setting = await Setting.findByPk(1);
         if (!setting) {

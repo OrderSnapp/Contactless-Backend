@@ -25,7 +25,7 @@ const createPayment = async ({ req, res }) => {
         });
 
         if (!orderHistory) {
-            console.log(`Order Log Status not found for orderId = ${data.orderId}`);
+            console.warn(`Order Log Status not found for orderId = ${data.orderId}`);
         }
 
         await Payment.create({
@@ -34,7 +34,7 @@ const createPayment = async ({ req, res }) => {
             paymentMethod: data.paymentType,
             paymentAmount: data.totalOrderAmount,
             paymentStatus: 'SUCCESS',
-            receiveAmount: data.recievedAmount,
+            receiveAmount: data.receivedAmount,
             changeAmount: data.changeDue,
         }, { transaction: t });
 
@@ -49,6 +49,23 @@ const createPayment = async ({ req, res }) => {
         }
 
         await t.commit();
+
+        (async () => {
+            const message = `🔔 *New Transaction Alert!*\n` +
+                `💰 *Amount:* $${data.totalOrderAmount}\n` +
+                `📄 *Order Number:* ${order.orderNumber}\n` +
+                `💳 *Payment Method:* ${data.paymentType}\n` +
+                `💵 *Received Amount:* $${data.receivedAmount}\n` +
+                `💸 *Change Due:* $${data.changeDue}\n` +
+                `📅 *Date:* ${new Date().toLocaleString()}\n`;
+        
+            try {
+                await sendAlertTelegram(message);
+            } catch (alertErr) {
+                console.warn('Telegram alert failed:', alertErr);
+            }
+        })();
+
         return apiResponse(res, 200, 'Payment created successfully');
 
     } catch (error) {
@@ -143,6 +160,15 @@ const checkTransaction = async({ req, res }) => {
             });
             console.log('Payment created successfully');
 
+            const message = `🔔 *New Transaction Alert!*\n` +
+                    `💵 *Received Amount:* $${data.data.amount}\n` +
+                    `💳 *Payment Method:* KHQR\n` +
+                    `📄 *Order Number:* ${orderNumber}\n` +
+                    `💸 *Change Due:* $0\n` +
+                    `📅 *Date:* ${new Date()}\n`;
+
+            await sendAlertTelegram(message);
+
             return apiResponse(res, 200, 'Transaction found',1);
         }
 
@@ -162,6 +188,25 @@ const checkTransaction = async({ req, res }) => {
         return apiResponse(res, 500, 'Internal Server Error');
     }
 };
+
+const sendAlertTelegram = async (message) =>{
+    const telegramUrl = `${process.env.TELEGRAM_URL}${process.env.TELEGRAM_TOKEN}/sendMessage`;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+
+    const response = await fetch(`${telegramUrl}`, {
+        method:'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+            parse_mode: 'Markdown',
+        })
+    });
+
+    console.log(`Telegram response: ${response.status} ${response.statusText}`);
+}
 
 module.exports = {
     createPayment,
