@@ -160,14 +160,18 @@ const checkTransaction = async({ req, res }) => {
             });
             console.log('Payment created successfully');
 
-            const message = `🔔 *New Transaction Alert!*\n` +
+            try{
+                const message = `🔔 *New Transaction Alert!*\n` +
                     `💵 *Received Amount:* $${data.data.amount}\n` +
                     `💳 *Payment Method:* KHQR\n` +
                     `📄 *Order Number:* ${orderNumber}\n` +
                     `💸 *Change Due:* $0\n` +
                     `📅 *Date:* ${new Date()}\n`;
 
-            await sendAlertTelegram(message);
+                await sendAlertTelegram(message);
+            }catch(err){
+                console.log('Telegram alert failed:', err);
+            }
 
             return apiResponse(res, 200, 'Transaction found',1);
         }
