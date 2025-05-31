@@ -166,7 +166,7 @@ const checkTransaction = async({ req, res }) => {
                     `💳 *Payment Method:* KHQR\n` +
                     `📄 *Order Number:* ${orderNumber}\n` +
                     `💸 *Change Due:* $0\n` +
-                    `📅 *Date:* ${new Date()}\n`;
+                    `📅 *Date:* ${new Date().toLocaleString()}\n`;
 
                 await sendAlertTelegram(message);
             }catch(err){
