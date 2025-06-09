@@ -68,7 +68,7 @@ const createOrderService = async ({ req, res }) => {
 
   await OrderStatusLogs.create(orderStatusLogs);
   
-    return apiResponse(res, 201, 'Review created successfully',data.orderNumber);
+    return apiResponse(res, 201, 'Order placed successfully!',data.orderNumber);
   }catch(err){
     console.error('Error creating order:', err);
     return apiResponse(res, 500, 'Internal server error');
@@ -134,7 +134,7 @@ const createCustomerOrderService = async ({ req, res }) => {
   
     await OrderStatusLogs.create(orderStatusLogs);
   
-    return apiResponse(res, 201, 'Review created successfully', data.orderNumber);
+    return apiResponse(res, 201, 'Order placed successfully!', data.orderNumber);
   }catch(err){
     console.error('Error creating customer order:', err);
     return apiResponse(res, 500, 'Internal server error');

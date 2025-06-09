@@ -1,5 +1,6 @@
 const Setting = require('../models/settingModel');
 const apiResponse = require('../utils/apiResponse');
+const cloudinary = require('../config/cloudinary');
 
 const getSettingService = async ({res}) => {
     try {
@@ -16,20 +17,25 @@ const updateSettingService = async ({req, res}) => {
     console.log('Start updateSettingService');
     try {
         const data = req.body
-        const shopLogo = req.file;
+        let shopLogo = data.shopLogo;
 
-        console.log('request body: ', data);
-        console.log('uploaded file: ', shopLogo);
+        const isBase64Image = typeof shopLogo === 'string' && shopLogo.startsWith('data:image/');
+
+        if (isBase64Image) {
+            const uploadResponse = await cloudinary.uploader.upload(shopLogo, {
+                folder: 'table-qr-codes',
+                use_filename: true,
+            });
+            shopLogo = uploadResponse.secure_url;
+        }
 
         let setting = await Setting.findByPk(1);
         if (!setting) {
-            console.log('Setting not found');
-            
             const payload = {
                 id: 1,
                 theme: data.theme,
                 shopName: data.shopName,
-                shopLogo: data.shopLogo,
+                shopLogo: shopLogo,
                 font: data.font,
                 darkMode: data.darkMode == true ? '1' : '0',
                 fontFamily: data.fontFamily,
@@ -45,7 +51,7 @@ const updateSettingService = async ({req, res}) => {
 
         setting.theme = data.theme;
         setting.shopName = data.shopName;
-        setting.shopLogo = data.shopLogo;
+        setting.shopLogo = shopLogo;
         setting.font = data.font;
         setting.fontFamily = data.fontFamily;
         setting.darkMode = data.darkMode == true ? '1' : '0';
