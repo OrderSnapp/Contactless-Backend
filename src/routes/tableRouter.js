@@ -11,6 +11,6 @@ tableRouter.get('/layout', authRoleMiddleware(['Admin','Staff']), tableControlle
 tableRouter.get('/:id', tableController.getTable);
 tableRouter.put('/:id', authRoleMiddleware(['Admin']), tableController.updateTable);
 tableRouter.delete('/:id', authRoleMiddleware(['Admin']), tableController.deleteTable);
-tableRouter.post('/order/items', authRoleMiddleware(['Admin']), tableController.getTableOrderByTableId);
+tableRouter.post('/order/items', authRoleMiddleware(['Admin','Staff']), tableController.getTableOrderByTableId);
 
 module.exports = tableRouter;
